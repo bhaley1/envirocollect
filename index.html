@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnviroCollect — Multilingual Environmental Sample Collection Tool</title>
+<meta name="description" content="Free multilingual field data collection template for water and environmental sample collection. Download as Excel in 22 languages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#1a1814;--ink-2:#4a4640;--ink-3:#8a8480;
+  --paper:#f4f8f4;--paper-2:#eaf2ea;--paper-3:#dceadc;
+  --rule:rgba(26,24,20,0.12);--rule-2:rgba(26,24,20,0.06);
+  --green:#1a6b3c;--green-2:#2d8a52;--green-light:#e8f5ee;
+  --blue:#1a4d8f;--blue-light:#e8eff8;
+  --radius:4px;--radius-lg:8px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7;min-height:100vh;}
+
+/* ── Header ── */
+header{border-bottom:1px solid var(--rule);padding:0 2rem;background:white;position:sticky;top:0;z-index:200;box-shadow:0 1px 8px rgba(0,0,0,0.04);}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.logo{font-family:'Lora',serif;font-size:18px;font-weight:600;letter-spacing:-0.02em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px;}
+.logo-icon{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.logo span{color:var(--green);}
+.beta-badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;background:#e8f5ee;color:var(--green);border:1px solid rgba(26,107,60,0.3);border-radius:99px;padding:2px 8px;margin-left:8px;vertical-align:middle;}
+.header-by{font-size:12px;color:var(--ink-3);}
+.header-by a{color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;}
+
+/* ── Hero ── */
+.hero{padding:4rem 2rem 3rem;background:linear-gradient(160deg,#f0f8f2 0%,#e8f4f0 50%,#eef4e8 100%);border-bottom:1px solid var(--rule);text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a6b3c' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hero-eyebrow{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--green);opacity:0.4;}
+.hero h1{font-family:'Lora',serif;font-size:clamp(2rem,4vw,3rem);font-weight:600;line-height:1.15;letter-spacing:-0.025em;margin-bottom:1rem;max-width:680px;margin-left:auto;margin-right:auto;position:relative;}
+.hero-sub{font-size:15px;color:var(--ink-2);max-width:520px;margin:0 auto 2rem;font-weight:300;line-height:1.8;position:relative;}
+.hero-features{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;position:relative;}
+.feature-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--green);background:white;border:1px solid rgba(26,107,60,0.25);border-radius:99px;padding:5px 14px;}
+
+/* ── Language picker ── */
+.lang-section{padding:2.5rem 2rem;background:white;border-bottom:1px solid var(--rule);}
+.lang-inner{max-width:1000px;margin:0 auto;}
+.lang-prompt{text-align:center;font-size:13px;color:var(--ink-3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1.5rem;}
+.lang-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.lang-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:99px;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink-2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.lang-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-light);}
+.lang-btn.selected{background:var(--green);color:white;border-color:var(--green);}
+.lang-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.6;flex-shrink:0;}
+
+/* ── App section ── */
+#appSection{display:none;max-width:1200px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+#appSection.visible{display:block;animation:fadeUp 0.3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.selected-bar{display:flex;align-items:center;justify-content:space-between;background:var(--green);color:white;border-radius:var(--radius-lg);padding:12px 20px;margin-bottom:1.5rem;}
+.selected-bar .lang-display{font-size:15px;font-weight:500;}
+.selected-bar .lang-display span{opacity:0.7;font-size:13px;margin-left:8px;}
+.btn-change{font-size:12px;color:rgba(255,255,255,0.8);background:none;border:1px solid rgba(255,255,255,0.4);border-radius:var(--radius);padding:4px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.btn-change:hover{color:white;border-color:white;}
+
+/* ── Preview card ── */
+.preview-card{border:1px solid var(--rule);border-radius:var(--radius-lg);background:white;overflow:hidden;margin-bottom:1.5rem;}
+.preview-header{padding:1rem 1.5rem;border-bottom:1px solid var(--rule-2);display:flex;align-items:center;justify-content:space-between;}
+.preview-header h2{font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.preview-header h2 span{font-size:11px;font-weight:400;color:var(--ink-3);}
+.section-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.section-tab{font-size:11px;font-weight:500;padding:3px 10px;border-radius:99px;border:1px solid var(--rule);background:var(--paper-2);color:var(--ink-3);cursor:pointer;transition:all 0.12s;}
+.section-tab.active{background:var(--green);color:white;border-color:var(--green);}
+
+/* ── Column preview table ── */
+.table-scroll{overflow-x:auto;}
+.col-table{width:100%;border-collapse:collapse;font-size:13px;}
+.col-table th{background:var(--paper-2);padding:8px 12px;text-align:left;font-weight:500;color:var(--ink-3);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;border-bottom:1px solid var(--rule);white-space:nowrap;}
+.col-table td{padding:9px 12px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top;}
+.col-table tr:last-child td{border-bottom:none;}
+.col-table tr:hover td{background:var(--paper);}
+.col-en{font-weight:500;color:var(--ink);}
+.col-trans{color:var(--green);}
+.col-type{font-size:11px;color:var(--ink-3);background:var(--paper-2);padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.col-unit{font-size:11px;color:var(--ink-3);}
+.section-badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.s-identity{background:#e8eff8;color:#1a4d8f;}
+.s-location{background:#e8f5ee;color:#1a6b3c;}
+.s-sample{background:#fff3e0;color:#8b5e00;}
+.s-environment{background:#f3eaf8;color:#5c2d7c;}
+.s-collection{background:#fdf3ec;color:#6b3a1a;}
+.s-analysis{background:#e0fafa;color:#005c5c;}
+.s-qc{background:#fdf0f0;color:#8b1a1a;}
+
+/* ── Download button ── */
+.download-wrap{text-align:center;margin-top:1.5rem;}
+.btn-download{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:var(--green);color:white;border:none;border-radius:var(--radius-lg);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.15s;box-shadow:0 2px 12px rgba(26,107,60,0.25);}
+.btn-download:hover{background:var(--green-2);box-shadow:0 4px 20px rgba(26,107,60,0.35);transform:translateY(-1px);}
+.btn-download:active{transform:translateY(0);}
+.dl-icon{font-size:18px;}
+.btn-download-note{font-size:12px;color:var(--ink-3);margin-top:8px;}
+
+/* ── Info cards ── */
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;}
+.info-card{background:white;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;}
+.info-card .info-icon{font-size:20px;margin-bottom:8px;}
+.info-card h3{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.info-card p{font-size:12px;color:var(--ink-3);line-height:1.6;}
+
+/* ── Footer ── */
+footer{border-top:1px solid var(--rule);padding:2rem;text-align:center;font-size:12px;color:var(--ink-3);background:white;}
+footer a{color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;}
+
+@media(max-width:700px){
+  .info-grid{grid-template-columns:1fr;}
+  .hero-features{flex-direction:column;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">💧</div>
+      Enviro<span>Collect</span><span class="beta-badge">Beta</span>
+    </a>
+    <span class="header-by">By <a href="https://github.com/bhaley1" target="_blank">bhaley1</a> · Companion to <a href="https://bhaley1.github.io/manuscript-summarizer---beta/" target="_blank">SciSummarize</a></span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Environmental Field Data Tool</div>
+  <h1 id="heroTitle">Your language.<br>Your field data.<br>Ready to analyze.</h1>
+  <p class="hero-sub" id="heroSub">Select your language and download a comprehensive multilingual sample collection template — ready for water, sediment, biofilm, and soil sampling with downstream genomic analysis in mind.</p>
+  <div class="hero-features">
+    <span class="feature-pill">💧 Water & Sediment</span>
+    <span class="feature-pill">🧬 Genomics-ready</span>
+    <span class="feature-pill">📊 45 fields</span>
+    <span class="feature-pill">🌍 22 languages</span>
+    <span class="feature-pill">📥 Excel download</span>
+  </div>
+</section>
+
+<!-- LANGUAGE PICKER -->
+<section class="lang-section">
+  <div class="lang-inner">
+    <div class="lang-prompt" id="langPrompt">SELECT YOUR LANGUAGE · CHOISISSEZ VOTRE LANGUE · SELECCIONE SU IDIOMA</div>
+    <div class="lang-grid" id="langGrid"></div>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="appSection">
+  <div class="selected-bar">
+    <div class="lang-display" id="langDisplay">English <span>Selected</span></div>
+    <button class="btn-change" id="btnChange" onclick="changeLang()">Change language</button>
+  </div>
+
+  <div class="preview-card">
+    <div class="preview-header">
+      <h2 id="previewTitle">Column Preview <span id="previewSub">— showing all 45 fields with translations</span></h2>
+      <div class="section-tabs" id="sectionTabs"></div>
+    </div>
+    <div class="table-scroll">
+      <table class="col-table">
+        <thead>
+          <tr>
+            <th id="thSection">Section</th>
+            <th id="thField">Field (English)</th>
+            <th id="thTranslation">Translation</th>
+            <th id="thType">Type</th>
+            <th id="thUnit">Unit / Options</th>
+          </tr>
+        </thead>
+        <tbody id="colTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="download-wrap">
+    <button class="btn-download" id="btnDownload" onclick="downloadExcel()">
+      <span class="dl-icon">📥</span>
+      <span id="btnDownloadText">Download Excel Template</span>
+    </button>
+    <div class="btn-download-note" id="dlNote">Saves locally to your device · No data sent to any server</div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">🔒</div>
+      <h3 id="infoPrivTitle">Completely private</h3>
+      <p id="infoPrivDesc">All data stays on your device. Nothing is uploaded or stored. The template is generated locally in your browser.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🧬</div>
+      <h3 id="infoBioTitle">Genomics-ready</h3>
+      <p id="infoBioDesc">Fields for WGS, metagenomics, 16S rRNA, and target pathogen tracking — designed for downstream bioinformatic analysis.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📋</div>
+      <h3 id="infoQcTitle">QC & chain of custody</h3>
+      <p id="infoQcDesc">Built-in fields for field blanks, equipment blanks, duplicates, and chain of custody — compatible with ISO 17025 requirements.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>EnviroCollect — Free multilingual environmental field data collection tool.
+  Built by <a href="https://github.com/bhaley1" target="_blank">bhaley1</a> ·
+  Companion to <a href="https://bhaley1.github.io/manuscript-summarizer---beta/" target="_blank">SciSummarize</a> ·
+  <a href="https://github.com/bhaley1/manuscript-summarizer---beta/issues" target="_blank">Feedback</a>
+  </p>
+</footer>
+
+<script>
+// ── Language definitions ──────────────────────────────────────────────────
+const LANGS = [
+  {code:'en',native:'English',english:'English',dir:'ltr'},
+  {code:'fr',native:'Français',english:'French',dir:'ltr'},
+  {code:'es',native:'Español',english:'Spanish',dir:'ltr'},
+  {code:'pt',native:'Português',english:'Portuguese',dir:'ltr'},
+  {code:'it',native:'Italiano',english:'Italian',dir:'ltr'},
+  {code:'ar',native:'العربية',english:'Arabic',dir:'rtl'},
+  {code:'zh',native:'中文',english:'Mandarin',dir:'ltr'},
+  {code:'sw',native:'Kiswahili',english:'Swahili',dir:'ltr'},
+  {code:'am',native:'አማርኛ',english:'Amharic',dir:'ltr'},
+  {code:'hi',native:'हिन्दी',english:'Hindi',dir:'ltr'},
+  {code:'bn',native:'বাংলা',english:'Bengali',dir:'ltr'},
+  {code:'id',native:'Bahasa Indonesia',english:'Indonesian',dir:'ltr'},
+  {code:'uk',native:'Українська',english:'Ukrainian',dir:'ltr'},
+  {code:'ha',native:'Hausa',english:'Hausa',dir:'ltr'},
+  {code:'yo',native:'Yorùbá',english:'Yoruba',dir:'ltr'},
+  {code:'ln',native:'Lingála',english:'Lingala',dir:'ltr'},
+  {code:'mg',native:'Malagasy',english:'Malagasy',dir:'ltr'},
+  {code:'ne',native:'नेपाली',english:'Nepali',dir:'ltr'},
+  {code:'tl',native:'Tagalog',english:'Tagalog',dir:'ltr'},
+  {code:'rw',native:'Kinyarwanda',english:'Kinyarwanda',dir:'ltr'},
+  {code:'rn',native:'Ikirundi',english:'Kirundi',dir:'ltr'},
+  {code:'ny',native:'Chichewa',english:'Chichewa',dir:'ltr'},
+];
+
+// ── Column definitions ────────────────────────────────────────────────────
+// section, fieldEn, type, unit, translations per language code
+const SECTIONS = [
+  {id:'identity',  en:'Sample Identity',    badge:'s-identity'},
+  {id:'location',  en:'Location',           badge:'s-location'},
+  {id:'sample',    en:'Sample Type',        badge:'s-sample'},
+  {id:'env',       en:'Environmental Conditions', badge:'s-environment'},
+  {id:'collection',en:'Collection Method',  badge:'s-collection'},
+  {id:'analysis',  en:'Downstream Analysis',badge:'s-analysis'},
+  {id:'qc',        en:'Quality Control',    badge:'s-qc'},
+];
+
+const COLUMNS = [
+  // IDENTITY
+  {s:'identity',en:'Sample ID',             type:'Text',    unit:'Unique identifier'},
+  {s:'identity',en:'Collection Date',       type:'Date',    unit:'YYYY-MM-DD'},
+  {s:'identity',en:'Collection Time',       type:'Time',    unit:'HH:MM (24h)'},
+  {s:'identity',en:'Collector Name',        type:'Text',    unit:'Full name'},
+  {s:'identity',en:'Institution / Organization', type:'Text', unit:''},
+  {s:'identity',en:'Project / Study Name',  type:'Text',    unit:''},
+  {s:'identity',en:'Sample Code (Lab)',     type:'Text',    unit:'Internal lab code'},
+  // LOCATION
+  {s:'location',en:'Country',               type:'Text',    unit:''},
+  {s:'location',en:'Region / State / Province', type:'Text', unit:''},
+  {s:'location',en:'Site Name',             type:'Text',    unit:''},
+  {s:'location',en:'GPS Latitude',          type:'Number',  unit:'Decimal degrees'},
+  {s:'location',en:'GPS Longitude',         type:'Number',  unit:'Decimal degrees'},
+  {s:'location',en:'Elevation (m)',         type:'Number',  unit:'Metres above sea level'},
+  {s:'location',en:'Water Body Type',       type:'Select',  unit:'River / Lake / Pond / Well / Ocean / Estuary / Wetland / Tap / Wastewater / Other'},
+  {s:'location',en:'Site Description',      type:'Text',    unit:'Brief description of site'},
+  {s:'location',en:'Distance to Nearest Road (m)', type:'Number', unit:'Metres'},
+  {s:'location',en:'Land Use (surrounding area)', type:'Select', unit:'Agricultural / Urban / Forest / Pastoral / Industrial / Natural / Mixed'},
+  // SAMPLE TYPE
+  {s:'sample',en:'Sample Matrix',           type:'Select',  unit:'Water / Sediment / Biofilm / Soil / Air / Other'},
+  {s:'sample',en:'Sample Volume (mL)',      type:'Number',  unit:'mL'},
+  {s:'sample',en:'Sample Weight (g)',       type:'Number',  unit:'g (sediment/soil)'},
+  {s:'sample',en:'Depth of Collection (m)',  type:'Number', unit:'Metres below surface'},
+  {s:'sample',en:'Number of Replicates',    type:'Number',  unit:''},
+  {s:'sample',en:'Field Replicate ID',      type:'Text',    unit:'e.g. A, B, C'},
+  {s:'sample',en:'Sample Description / Notes', type:'Text', unit:''},
+  // ENVIRONMENTAL CONDITIONS
+  {s:'env',en:'Water Temperature (°C)',     type:'Number',  unit:'°C'},
+  {s:'env',en:'Air Temperature (°C)',       type:'Number',  unit:'°C'},
+  {s:'env',en:'pH',                         type:'Number',  unit:'0–14'},
+  {s:'env',en:'Dissolved Oxygen (mg/L)',    type:'Number',  unit:'mg/L'},
+  {s:'env',en:'Conductivity (µS/cm)',       type:'Number',  unit:'µS/cm'},
+  {s:'env',en:'Turbidity (NTU)',            type:'Number',  unit:'NTU'},
+  {s:'env',en:'Salinity (ppt)',             type:'Number',  unit:'ppt'},
+  {s:'env',en:'Oxidation-Reduction Potential (mV)', type:'Number', unit:'mV'},
+  {s:'env',en:'Flow Rate (m/s)',            type:'Number',  unit:'m/s'},
+  {s:'env',en:'Weather Conditions',         type:'Select',  unit:'Clear / Cloudy / Rain / Heavy Rain / Fog / Wind / Storm'},
+  {s:'env',en:'Rainfall Last 24 Hours (mm)',type:'Number',  unit:'mm'},
+  // COLLECTION METHOD
+  {s:'collection',en:'Collection Method',   type:'Select',  unit:'Grab / Composite / Passive Sampler / Filtration / Swab / Core / Other'},
+  {s:'collection',en:'Filter Type',         type:'Text',    unit:'e.g. Sterivex, polycarbonate, glass fibre'},
+  {s:'collection',en:'Filter Pore Size (µm)', type:'Number',unit:'µm'},
+  {s:'collection',en:'Volume Filtered (mL)',type:'Number',  unit:'mL'},
+  {s:'collection',en:'Filtration Time (min)',type:'Number', unit:'Minutes'},
+  {s:'collection',en:'Preservative Used',   type:'Text',    unit:'e.g. RNAlater, ethanol, none'},
+  {s:'collection',en:'Storage Temperature (°C)', type:'Number', unit:'°C at time of storage'},
+  {s:'collection',en:'Transport Conditions',type:'Select',  unit:'Dry ice / Ice / Ambient / Frozen / Refrigerated'},
+  {s:'collection',en:'Time to Processing (hours)', type:'Number', unit:'Hours from collection to lab'},
+  // DOWNSTREAM ANALYSIS
+  {s:'analysis',en:'Culture / Isolation',   type:'Yes/No',  unit:'Y / N'},
+  {s:'analysis',en:'PCR / qPCR',            type:'Yes/No',  unit:'Y / N'},
+  {s:'analysis',en:'Whole Genome Sequencing (WGS)', type:'Yes/No', unit:'Y / N'},
+  {s:'analysis',en:'Shotgun Metagenomics',  type:'Yes/No',  unit:'Y / N'},
+  {s:'analysis',en:'16S rRNA Amplicon Sequencing', type:'Yes/No', unit:'Y / N'},
+  {s:'analysis',en:'Chemical / Nutrient Analysis', type:'Yes/No', unit:'Y / N'},
+  {s:'analysis',en:'Antibiotic Resistance Genes (ARG)', type:'Yes/No', unit:'Y / N'},
+  {s:'analysis',en:'Target Pathogens',      type:'Text',    unit:'e.g. Salmonella, E. coli, Campylobacter'},
+  {s:'analysis',en:'Target Genes',          type:'Text',    unit:'e.g. 16S, invA, stx1, mecA'},
+  {s:'analysis',en:'Sequencing Platform',   type:'Select',  unit:'Illumina / Oxford Nanopore / PacBio / Ion Torrent / Other'},
+  // QUALITY CONTROL
+  {s:'qc',en:'Field Blank',                 type:'Yes/No',  unit:'Y / N'},
+  {s:'qc',en:'Equipment Blank',             type:'Yes/No',  unit:'Y / N'},
+  {s:'qc',en:'Field Duplicate',             type:'Yes/No',  unit:'Y / N'},
+  {s:'qc',en:'Trip Blank',                  type:'Yes/No',  unit:'Y / N'},
+  {s:'qc',en:'Chain of Custody Number',     type:'Text',    unit:''},
+  {s:'qc',en:'Sample Condition on Arrival', type:'Select',  unit:'Good / Damaged / Leaking / Temperature exceeded / Other'},
+  {s:'qc',en:'Comments / Additional Notes', type:'Text',    unit:'Free text'},
+];
+
+// ── Translations ──────────────────────────────────────────────────────────
+// Field translations indexed by section+field+lang
+// Format: T[fieldEn][langCode] = translated string
+const T = {
+  // SECTION NAMES
+  '__section_identity__':{fr:'Identité de l\'échantillon',es:'Identidad de la muestra',pt:'Identidade da amostra',it:'Identità del campione',ar:'هوية العينة',zh:'样品标识',sw:'Utambulisho wa Sampuli',am:'ናሙና መለያ',hi:'नमूना पहचान',bn:'নমুনা পরিচয়',id:'Identitas Sampel',uk:'Ідентифікація зразка',ha:'Sunan Samfur',yo:'Idanimọ Apẹẹrẹ',ln:'Koloba ya Exemple',mg:'Fanondroana Sample',ne:'नमुना परिचय',tl:'Pagkakakilanlan ng Sample',rw:'Indangagaciro y\'Intandaro',rn:'Indangagaciro y\'Akingirwa',ny:'Chidziwitso cha Sampulo'},
+  '__section_location__':{fr:'Localisation',es:'Ubicación',pt:'Localização',it:'Posizione',ar:'الموقع',zh:'位置',sw:'Mahali',am:'ቦታ',hi:'स्थान',bn:'অবস্থান',id:'Lokasi',uk:'Місцезнаходження',ha:'Wuri',yo:'Ipo',ln:'Esika',mg:'Toerana',ne:'स्थान',tl:'Lokasyon',rw:'Aho',rn:'Aho',ny:'Malo'},
+  '__section_sample__':{fr:'Type d\'échantillon',es:'Tipo de muestra',pt:'Tipo de amostra',it:'Tipo di campione',ar:'نوع العينة',zh:'样品类型',sw:'Aina ya Sampuli',am:'የናሙና አይነት',hi:'नमूना प्रकार',bn:'নমুনার ধরন',id:'Jenis Sampel',uk:'Тип зразка',ha:'Nau\'in Samfur',yo:'Iru Apẹẹrẹ',ln:'Ndenge ya Exemple',mg:'Karazana Sample',ne:'नमुना प्रकार',tl:'Uri ng Sample',rw:'Ubwoko bw\'Intandaro',rn:'Ubwoko bw\'Akingirwa',ny:'Mtundu wa Sampulo'},
+  '__section_env__':{fr:'Conditions environnementales',es:'Condiciones ambientales',pt:'Condições ambientais',it:'Condizioni ambientali',ar:'الظروف البيئية',zh:'环境条件',sw:'Hali ya Mazingira',am:'የአካባቢ ሁኔታዎች',hi:'पर्यावरणीय स्थितियाँ',bn:'পরিবেশগত অবস্থা',id:'Kondisi Lingkungan',uk:'Умови навколишнього середовища',ha:'Yanayin Muhalli',yo:'Ipo Ayika',ln:'Mpozela ya Esika',mg:'Toe-toerana',ne:'वातावरणीय अवस्थाहरू',tl:'Kondisyon ng Kapaligiran',rw:'Imiterere y\'Ibidukikije',rn:'Imiterere y\'Ibidukikije',ny:'Nyengo ya Malo'},
+  '__section_collection__':{fr:'Méthode de collecte',es:'Método de recolección',pt:'Método de coleta',it:'Metodo di raccolta',ar:'طريقة الجمع',zh:'采集方法',sw:'Njia ya Ukusanyaji',am:'የስብስብ ዘዴ',hi:'संग्रह विधि',bn:'সংগ্রহ পদ্ধতি',id:'Metode Pengambilan',uk:'Метод збору',ha:'Hanyar Tattarawa',yo:'Ọna Gbigba',ln:'Nzela ya Kosangisa',mg:'Fomba fanangonana',ne:'संकलन विधि',tl:'Paraan ng Pagkolekta',rw:'Uburyo bwo Gukusanya',rn:'Uburyo bwo Gukusanya',ny:'Njira ya Kukolekta'},
+  '__section_analysis__':{fr:'Analyses en aval',es:'Análisis posteriores',pt:'Análises posteriores',it:'Analisi a valle',ar:'التحليلات اللاحقة',zh:'下游分析',sw:'Uchambuzi wa Baadaye',am:'የዝርዝር ትንተና',hi:'डाउनस्ट्रीम विश्लेषण',bn:'পরবর্তী বিশ্লেষণ',id:'Analisis Lanjutan',uk:'Подальший аналіз',ha:'Nazarin Gaba',yo:'Itupalẹ Lẹyin',ln:'Bosololi ya Nsima',mg:'Fandinihana atao',ne:'डाउनस्ट्रिम विश्लेषण',tl:'Downstream na Pagsusuri',rw:'Isesengura rikurikira',rn:'Isesengura rikurikira',ny:'Kusanthula Kutsatira'},
+  '__section_qc__':{fr:'Contrôle qualité',es:'Control de calidad',pt:'Controle de qualidade',it:'Controllo qualità',ar:'ضبط الجودة',zh:'质量控制',sw:'Udhibiti wa Ubora',am:'የጥራት ቁጥጥር',hi:'गुणवत्ता नियंत्रण',bn:'মান নিয়ন্ত্রণ',id:'Kontrol Kualitas',uk:'Контроль якості',ha:'Sarrafa Inganci',yo:'Iṣakoso Didara',ln:'Kotala Bolamu',mg:'Fanaraha-maso kalitao',ne:'गुणस्तर नियन्त्रण',tl:'Kontrol sa Kalidad',rw:'Kugenzura Ubuziranenge',rn:'Kugenzura Ubuziranenge',ny:'Kuyang\'anira Ubwino'},
+
+  // FIELD TRANSLATIONS — key fields
+  'Sample ID':{fr:'ID Échantillon',es:'ID Muestra',pt:'ID Amostra',it:'ID Campione',ar:'معرّف العينة',zh:'样品编号',sw:'Nambari ya Sampuli',am:'የናሙና መለያ',hi:'नमूना आईडी',bn:'নমুনা আইডি',id:'ID Sampel',uk:'ID Зразка',ha:'Lamba na Samfur',yo:'Nọmba Apẹẹrẹ',ln:'Nomero ya Exemple',mg:'Laharana Sample',ne:'नमुना आईडी',tl:'ID ng Sample',rw:'Inomero y\'Intandaro',rn:'Inomero y\'Akingirwa',ny:'Nambala ya Sampulo'},
+  'Collection Date':{fr:'Date de collecte',es:'Fecha de recolección',pt:'Data de coleta',it:'Data di raccolta',ar:'تاريخ الجمع',zh:'采集日期',sw:'Tarehe ya Ukusanyaji',am:'የስብስብ ቀን',hi:'संग्रह तिथि',bn:'সংগ্রহের তারিখ',id:'Tanggal Pengambilan',uk:'Дата збору',ha:'Ranar Tattarawa',yo:'Ọjọ Gbigba',ln:'Mokolo ya Kosangisa',mg:'Daty fanangonana',ne:'संकलन मिति',tl:'Petsa ng Pagkolekta',rw:'Italiki yo Gukusanya',rn:'Italiki yo Gukusanya',ny:'Tsiku la Kukolekta'},
+  'Collection Time':{fr:'Heure de collecte',es:'Hora de recolección',pt:'Hora de coleta',it:'Ora di raccolta',ar:'وقت الجمع',zh:'采集时间',sw:'Wakati wa Ukusanyaji',am:'የስብስብ ጊዜ',hi:'संग्रह समय',bn:'সংগ্রহের সময়',id:'Waktu Pengambilan',uk:'Час збору',ha:'Lokacin Tattarawa',yo:'Akoko Gbigba',ln:'Ngonga ya Kosangisa',mg:'Ora fanangonana',ne:'संकलन समय',tl:'Oras ng Pagkolekta',rw:'Isaha yo Gukusanya',rn:'Isaha yo Gukusanya',ny:'Nthawi ya Kukolekta'},
+  'Collector Name':{fr:'Nom du collecteur',es:'Nombre del recolector',pt:'Nome do coletor',it:'Nome del raccoglitore',ar:'اسم الجامع',zh:'采集人姓名',sw:'Jina la Mkusanyaji',am:'የሰብሳቢ ስም',hi:'संग्रहकर्ता का नाम',bn:'সংগ্রহকারীর নাম',id:'Nama Pengambil Sampel',uk:'Ім\'я збирача',ha:'Sunan Mai Tattarawa',yo:'Orukọ Olugba',ln:'Nkombo ya Mosangisi',mg:'Anarana mpanangona',ne:'संकलनकर्ताको नाम',tl:'Pangalan ng Manlalakip',rw:'Izina ry\'Ugukusanya',rn:'Izina ry\'Ugukusanya',ny:'Dzina la Wokolekta'},
+  'Institution / Organization':{fr:'Institution / Organisation',es:'Institución / Organización',pt:'Instituição / Organização',it:'Istituzione / Organizzazione',ar:'المؤسسة / المنظمة',zh:'机构 / 组织',sw:'Taasisi / Shirika',am:'ተቋም / ድርጅት',hi:'संस्था / संगठन',bn:'প্রতিষ্ঠান / সংস্থা',id:'Institusi / Organisasi',uk:'Установа / Організація',ha:'Cibiyar / Ƙungiya',yo:'Ile-iṣẹ / Ẹgbẹ',ln:'Établissement / Organisation',mg:'Fikambanana / Orinasa',ne:'संस्था / संगठन',tl:'Institusyon / Organisasyon',rw:'Inzego / Umuryango',rn:'Inzego / Umuryango',ny:'Bungwe / Mabungwe'},
+  'Project / Study Name':{fr:'Projet / Nom de l\'étude',es:'Proyecto / Nombre del estudio',pt:'Projeto / Nome do estudo',it:'Progetto / Nome dello studio',ar:'المشروع / اسم الدراسة',zh:'项目 / 研究名称',sw:'Mradi / Jina la Utafiti',am:'ፕሮጀክት / የጥናት ስም',hi:'परियोजना / अध्ययन नाम',bn:'প্রকল্প / গবেষণার নাম',id:'Proyek / Nama Studi',uk:'Проект / Назва дослідження',ha:'Aikin / Sunan Bincike',yo:'Iṣẹ Akanṣe / Orukọ Iwadi',ln:'Projet / Kombo ya Etuteli',mg:'Tetikasa / Anarana fikarohana',ne:'परियोजना / अध्ययन नाम',tl:'Proyekto / Pangalan ng Pag-aaral',rw:'Umushinga / Izina ry\'Ubushakashatsi',rn:'Umushinga / Izina ry\'Ubushakashatsi',ny:'Pulojekiti / Dzina la Kafukufuku'},
+  'Sample Code (Lab)':{fr:'Code Échantillon (Labo)',es:'Código de Muestra (Lab)',pt:'Código da Amostra (Lab)',it:'Codice Campione (Lab)',ar:'كود العينة (المختبر)',zh:'样品代码（实验室）',sw:'Nambari ya Sampuli (Maabara)',am:'ናሙና ኮድ (ላቦራቶሪ)',hi:'नमूना कोड (लैब)',bn:'নমুনা কোড (ল্যাব)',id:'Kode Sampel (Lab)',uk:'Код зразка (лаб.)',ha:'Lambar Samfur (Dakin Lab)',yo:'Koodu Apẹẹrẹ (Lab)',ln:'Kode ya Exemple (Laboratoire)',mg:'Kaody Sample (Laboratoara)',ne:'नमुना कोड (ल्याब)',tl:'Code ng Sample (Lab)',rw:'Kode y\'Intandaro (Lab)',rn:'Kode y\'Akingirwa (Lab)',ny:'Kodi ya Sampulo (Laboratori)'},
+  'Country':{fr:'Pays',es:'País',pt:'País',it:'Paese',ar:'الدولة',zh:'国家',sw:'Nchi',am:'ሀገር',hi:'देश',bn:'দেশ',id:'Negara',uk:'Країна',ha:'Ƙasa',yo:'Orílẹ̀-èdè',ln:'Mboka',mg:'Firenena',ne:'देश',tl:'Bansa',rw:'Igihugu',rn:'Igihugu',ny:'Dziko'},
+  'Region / State / Province':{fr:'Région / État / Province',es:'Región / Estado / Provincia',pt:'Região / Estado / Província',it:'Regione / Stato / Provincia',ar:'المنطقة / الولاية / المحافظة',zh:'地区 / 州 / 省',sw:'Mkoa / Jimbo / Wilaya',am:'ክልል / ክፍለ ሀገር / ጠቅላይ ግዛት',hi:'क्षेत्र / राज्य / प्रांत',bn:'অঞ্চল / রাজ্য / প্রদেশ',id:'Wilayah / Provinsi',uk:'Регіон / Штат / Провінція',ha:'Yanki / Jiha / Lardin',yo:'Agbegbe / Ìpínlẹ̀',ln:'Esika / Etata / Province',mg:'Faritra / Fanjakana / Faritany',ne:'क्षेत्र / प्रदेश',tl:'Rehiyon / Estado / Lalawigan',rw:'Intara / Akarere',rn:'Intara / Akarere',ny:'Dera / Boma'},
+  'Site Name':{fr:'Nom du site',es:'Nombre del sitio',pt:'Nome do local',it:'Nome del sito',ar:'اسم الموقع',zh:'采样点名称',sw:'Jina la Eneo',am:'የቦታ ስም',hi:'स्थल का नाम',bn:'স্থানের নাম',id:'Nama Lokasi',uk:'Назва місця',ha:'Sunan Wuri',yo:'Orukọ Aaye',ln:'Nkombo ya Esika',mg:'Anarana toerana',ne:'स्थल नाम',tl:'Pangalan ng Lugar',rw:'Izina ry\'Ahantu',rn:'Izina ry\'Ahantu',ny:'Dzina la Malo'},
+  'GPS Latitude':{fr:'Latitude GPS',es:'Latitud GPS',pt:'Latitude GPS',it:'Latitudine GPS',ar:'خط العرض GPS',zh:'GPS纬度',sw:'Latitudo ya GPS',am:'GPS ኬክሮስ',hi:'GPS अक्षांश',bn:'GPS অক্ষাংশ',id:'Lintang GPS',uk:'Широта GPS',ha:'Latitiud GPS',yo:'GPS Latitude',ln:'GPS Latitude',mg:'GPS Latitude',ne:'GPS अक्षांश',tl:'GPS Latitude',rw:'GPS Latitude',rn:'GPS Latitude',ny:'GPS Latitude'},
+  'GPS Longitude':{fr:'Longitude GPS',es:'Longitud GPS',pt:'Longitude GPS',it:'Longitudine GPS',ar:'خط الطول GPS',zh:'GPS经度',sw:'Longitudo ya GPS',am:'GPS ኬንትሮስ',hi:'GPS देशांतर',bn:'GPS দ্রাঘিমাংশ',id:'Bujur GPS',uk:'Довгота GPS',ha:'Longitud GPS',yo:'GPS Longitude',ln:'GPS Longitude',mg:'GPS Longitude',ne:'GPS देशान्तर',tl:'GPS Longitude',rw:'GPS Longitude',rn:'GPS Longitude',ny:'GPS Longitude'},
+  'Elevation (m)':{fr:'Altitude (m)',es:'Elevación (m)',pt:'Altitude (m)',it:'Altitudine (m)',ar:'الارتفاع (م)',zh:'海拔 (m)',sw:'Mwinuko (m)',am:'ከፍታ (ሜ)',hi:'ऊंचाई (मी)',bn:'উচ্চতা (মি)',id:'Ketinggian (m)',uk:'Висота (м)',ha:'Tsawo (m)',yo:'Iga (m)',ln:'Mokili (m)',mg:'Haavony (m)',ne:'उचाई (मि)',tl:'Taas (m)',rw:'Ubuhagarike (m)',rn:'Ubuhagarike (m)',ny:'Ukwera (m)'},
+  'Water Body Type':{fr:'Type de masse d\'eau',es:'Tipo de cuerpo de agua',pt:'Tipo de corpo d\'água',it:'Tipo di corpo idrico',ar:'نوع المسطح المائي',zh:'水体类型',sw:'Aina ya Mwili wa Maji',am:'የውሃ አካል ዓይነት',hi:'जल निकाय का प्रकार',bn:'জলাশয়ের ধরন',id:'Jenis Badan Air',uk:'Тип водного об\'єкту',ha:'Nau\'in Ruwa',yo:'Iru Omi',ln:'Ndenge ya Mayi',mg:'Karazana rano',ne:'पानीको स्रोत प्रकार',tl:'Uri ng Katubigan',rw:'Ubwoko bw\'Amazi',rn:'Ubwoko bw\'Amazi',ny:'Mtundu wa Madzi'},
+  'Site Description':{fr:'Description du site',es:'Descripción del sitio',pt:'Descrição do local',it:'Descrizione del sito',ar:'وصف الموقع',zh:'采样点描述',sw:'Maelezo ya Eneo',am:'የቦታ መግለጫ',hi:'स्थल का विवरण',bn:'স্থানের বিবরণ',id:'Deskripsi Lokasi',uk:'Опис місця',ha:'Bayanin Wuri',yo:'Apejuwe Aaye',ln:'Koloba ya Esika',mg:'Fanazavana toerana',ne:'स्थल विवरण',tl:'Paglalarawan ng Lugar',rw:'Ibisobanuro by\'Ahantu',rn:'Ibisobanuro by\'Ahantu',ny:'Mfundo za Malo'},
+  'Distance to Nearest Road (m)':{fr:'Distance à la route la plus proche (m)',es:'Distancia a la carretera más cercana (m)',pt:'Distância à estrada mais próxima (m)',it:'Distanza dalla strada più vicina (m)',ar:'المسافة إلى أقرب طريق (م)',zh:'距最近道路距离 (m)',sw:'Umbali wa Barabara (m)',am:'ወደ ቅርቡ መንገድ ርቀት (ሜ)',hi:'निकटतम सड़क की दूरी (मी)',bn:'নিকটতম রাস্তার দূরত্ব (মি)',id:'Jarak ke Jalan Terdekat (m)',uk:'Відстань до найближчої дороги (м)',ha:'Nisan Hanya (m)',yo:'Ijinna si Ọna (m)',ln:'Mosika na Nzela (m)',mg:'Halavana amin\'ny lalana (m)',ne:'नजिकको बाटोको दूरी (मि)',tl:'Distansya sa Pinakamalapit na Daan (m)',rw:'Intera y\'Umuhanda (m)',rn:'Intera y\'Umuhanda (m)',ny:'Mtali ku Msewu (m)'},
+  'Land Use (surrounding area)':{fr:'Utilisation des terres (zone environnante)',es:'Uso del suelo (área circundante)',pt:'Uso do solo (área circundante)',it:'Uso del suolo (area circostante)',ar:'استخدام الأراضي (المنطقة المحيطة)',zh:'土地利用（周边地区）',sw:'Matumizi ya Ardhi (Eneo Jirani)',am:'የመሬት አጠቃቀም (የዙሪያ አካባቢ)',hi:'भूमि उपयोग (आसपास का क्षेत्र)',bn:'ভূমি ব্যবহার (পার্শ্ববর্তী এলাকা)',id:'Penggunaan Lahan (Area Sekitar)',uk:'Землекористування (навколишня зона)',ha:'Amfanin Ƙasa (Yankin Kewaye)',yo:'Lilo Ilẹ (Agbegbe Ayika)',ln:'Mosala ya Mabele (Esika Ekolongo)',mg:'Fampiasana tany (faritra manodidina)',ne:'भूमि उपयोग (वरपरको क्षेत्र)',tl:'Paggamit ng Lupa (Nakapaligid na Lugar)',rw:'Gukoresha Ubutaka (Akarere kegereye)',rn:'Gukoresha Ubutaka (Akarere kegereye)',ny:'Kugwiritsa Ntchito Nthaka (Mbali)'},
+  'Sample Matrix':{fr:'Matrice de l\'échantillon',es:'Matriz de la muestra',pt:'Matriz da amostra',it:'Matrice del campione',ar:'مصفوفة العينة',zh:'样品基质',sw:'Msingi wa Sampuli',am:'የናሙና መሰረት',hi:'नमूना मैट्रिक्स',bn:'নমুনার ম্যাট্রিক্স',id:'Matriks Sampel',uk:'Матриця зразка',ha:'Asalin Samfur',yo:'Matrix Apẹẹrẹ',ln:'Likolo ya Exemple',mg:'Matrix Sample',ne:'नमुना म्याट्रिक्स',tl:'Matrix ng Sample',rw:'Inkomoko y\'Intandaro',rn:'Inkomoko y\'Akingirwa',ny:'Maziko a Sampulo'},
+  'Sample Volume (mL)':{fr:'Volume de l\'échantillon (mL)',es:'Volumen de la muestra (mL)',pt:'Volume da amostra (mL)',it:'Volume del campione (mL)',ar:'حجم العينة (مل)',zh:'样品体积 (mL)',sw:'Kiasi cha Sampuli (mL)',am:'የናሙና መጠን (mL)',hi:'नमूना आयतन (mL)',bn:'নমুনার আয়তন (mL)',id:'Volume Sampel (mL)',uk:'Об\'єм зразка (мл)',ha:'Yawan Samfur (mL)',yo:'Iwọn Apẹẹrẹ (mL)',ln:'Ntalo ya Exemple (mL)',mg:'Refin\'ny Sample (mL)',ne:'नमुना मात्रा (mL)',tl:'Dami ng Sample (mL)',rw:'Ingano y\'Intandaro (mL)',rn:'Ingano y\'Akingirwa (mL)',ny:'Kuchuluka kwa Sampulo (mL)'},
+  'Sample Weight (g)':{fr:'Poids de l\'échantillon (g)',es:'Peso de la muestra (g)',pt:'Peso da amostra (g)',it:'Peso del campione (g)',ar:'وزن العينة (غ)',zh:'样品重量 (g)',sw:'Uzito wa Sampuli (g)',am:'የናሙና ክብደት (ግ)',hi:'नमूना वजन (ग्रा)',bn:'নমুনার ওজন (গ্রা)',id:'Berat Sampel (g)',uk:'Вага зразка (г)',ha:'Nauyin Samfur (g)',yo:'Iwuwo Apẹẹrẹ (g)',ln:'Motango ya Exemple (g)',mg:'Lanjan\'ny Sample (g)',ne:'नमुनाको तौल (ग्रा)',tl:'Timbang ng Sample (g)',rw:'Uburemere bw\'Intandaro (g)',rn:'Uburemere bw\'Akingirwa (g)',ny:'Kulemera kwa Sampulo (g)'},
+  'Depth of Collection (m)':{fr:'Profondeur de collecte (m)',es:'Profundidad de recolección (m)',pt:'Profundidade de coleta (m)',it:'Profondità di raccolta (m)',ar:'عمق الجمع (م)',zh:'采集深度 (m)',sw:'Kina cha Ukusanyaji (m)',am:'የስብስብ ጥልቀት (ሜ)',hi:'संग्रह की गहराई (मी)',bn:'সংগ্রহের গভীরতা (মি)',id:'Kedalaman Pengambilan (m)',uk:'Глибина збору (м)',ha:'Zurfin Tattarawa (m)',yo:'Ijinlẹ Gbigba (m)',ln:'Mozindo ya Kosangisa (m)',mg:'Halalin\'ny fanangonana (m)',ne:'संकलनको गहराई (मि)',tl:'Lalim ng Pagkolekta (m)',rw:'Ubujyogero bwo Gukusanya (m)',rn:'Ubujyogero bwo Gukusanya (m)',ny:'Kuya Kwakukolektera (m)'},
+  'Number of Replicates':{fr:'Nombre de réplicats',es:'Número de réplicas',pt:'Número de réplicas',it:'Numero di repliche',ar:'عدد المكررات',zh:'重复数量',sw:'Idadi ya Nakala',am:'የናሙና ቅጂ ብዛት',hi:'प्रतिकृति की संख्या',bn:'প্রতিলিপির সংখ্যা',id:'Jumlah Ulangan',uk:'Кількість повторів',ha:'Adadin Kwafi',yo:'Nọmba Atunwi',ln:'Motango ya Copies',mg:'Isan\'ny Kopie',ne:'प्रतिकृतिको संख्या',tl:'Bilang ng Replikado',rw:'Umubare w\'Ingomero',rn:'Umubare w\'Ingomero',ny:'Chiwerengero cha Zinyake'},
+  'Field Replicate ID':{fr:'ID Réplicat de terrain',es:'ID Réplica de campo',pt:'ID Réplica de campo',it:'ID Replica di campo',ar:'معرف المكرر الميداني',zh:'野外重复编号',sw:'ID ya Nakala ya Shamba',am:'የመስክ ቅጂ መለያ',hi:'फील्ड रेप्लिकेट आईडी',bn:'ফিল্ড রেপ্লিকেট আইডি',id:'ID Ulangan Lapangan',uk:'ID польового повтору',ha:'ID na Kwafin Filin',yo:'ID Atunwi Aaye',ln:'ID ya Copie ya Elanga',mg:'ID Kopie an-tany',ne:'फिल्ड रेप्लिकेट आईडी',tl:'Field Replicate ID',rw:'ID y\'Ingomero y\'Ubutaka',rn:'ID y\'Ingomero y\'Ubutaka',ny:'ID ya Nzinyake Kumunda'},
+  'Sample Description / Notes':{fr:'Description / Notes',es:'Descripción / Notas',pt:'Descrição / Notas',it:'Descrizione / Note',ar:'وصف العينة / ملاحظات',zh:'样品描述 / 备注',sw:'Maelezo / Maelezo ya Ziada',am:'የናሙና መግለጫ / ማስታወሻ',hi:'नमूना विवरण / नोट्स',bn:'নমুনার বিবরণ / মন্তব্য',id:'Deskripsi Sampel / Catatan',uk:'Опис зразка / Примітки',ha:'Bayanin Samfur / Lura',yo:'Apejuwe Apẹẹrẹ / Aksilẹ',ln:'Koloba ya Exemple / Makanisi',mg:'Fanazavana Sample / Fanamarihana',ne:'नमुना विवरण / टिप्पणी',tl:'Paglalarawan ng Sample / Tala',rw:'Ibisobanuro by\'Intandaro / Ibinotisi',rn:'Ibisobanuro by\'Akingirwa / Ibinotisi',ny:'Mfundo za Sampulo / Zindikiro'},
+  'Water Temperature (°C)':{fr:'Température de l\'eau (°C)',es:'Temperatura del agua (°C)',pt:'Temperatura da água (°C)',it:'Temperatura dell\'acqua (°C)',ar:'درجة حرارة الماء (°م)',zh:'水温 (°C)',sw:'Joto la Maji (°C)',am:'የውሃ ሙቀት (°C)',hi:'जल तापमान (°C)',bn:'পানির তাপমাত্রা (°C)',id:'Suhu Air (°C)',uk:'Температура води (°C)',ha:'Zafin Ruwa (°C)',yo:'Iwọn Ooru Omi (°C)',ln:'Mpio ya Mayi (°C)',mg:'Hafanin\'ny rano (°C)',ne:'पानीको तापक्रम (°C)',tl:'Temperatura ng Tubig (°C)',rw:'Ubushyuhe bw\'Amazi (°C)',rn:'Ubushyuhe bw\'Amazi (°C)',ny:'Kutentha kwa Madzi (°C)'},
+  'Air Temperature (°C)':{fr:'Température de l\'air (°C)',es:'Temperatura del aire (°C)',pt:'Temperatura do ar (°C)',it:'Temperatura dell\'aria (°C)',ar:'درجة حرارة الهواء (°م)',zh:'气温 (°C)',sw:'Joto la Hewa (°C)',am:'የአየር ሙቀት (°C)',hi:'वायु तापमान (°C)',bn:'বায়ু তাপমাত্রা (°C)',id:'Suhu Udara (°C)',uk:'Температура повітря (°C)',ha:'Zafin Iska (°C)',yo:'Iwọn Ooru Afẹfẹ (°C)',ln:'Mpio ya Moyindo (°C)',mg:'Hafanin\'ny rivotra (°C)',ne:'हावाको तापक्रम (°C)',tl:'Temperatura ng Hangin (°C)',rw:'Ubushyuhe bw\'Ikirere (°C)',rn:'Ubushyuhe bw\'Ikirere (°C)',ny:'Kutentha kwa Mpweya (°C)'},
+  'pH':{fr:'pH',es:'pH',pt:'pH',it:'pH',ar:'الرقم الهيدروجيني (pH)',zh:'pH值',sw:'pH',am:'pH',hi:'pH',bn:'pH',id:'pH',uk:'pH',ha:'pH',yo:'pH',ln:'pH',mg:'pH',ne:'pH',tl:'pH',rw:'pH',rn:'pH',ny:'pH'},
+  'Dissolved Oxygen (mg/L)':{fr:'Oxygène dissous (mg/L)',es:'Oxígeno disuelto (mg/L)',pt:'Oxigênio dissolvido (mg/L)',it:'Ossigeno disciolto (mg/L)',ar:'الأكسجين الذائب (ملغ/لتر)',zh:'溶解氧 (mg/L)',sw:'Oksijeni Iliyoyeyuka (mg/L)',am:'የሟሟ ኦክሲጅን (mg/L)',hi:'घुलित ऑक्सीजन (mg/L)',bn:'দ্রবীভূত অক্সিজেন (mg/L)',id:'Oksigen Terlarut (mg/L)',uk:'Розчинений кисень (мг/л)',ha:'Oxygen a Ruwa (mg/L)',yo:'Afẹfẹ Oxygen ti tuka (mg/L)',ln:'Oxygen na Mayi (mg/L)',mg:'Oksizenina volevona (mg/L)',ne:'घुलित अक्सिजन (mg/L)',tl:'Dissolved Oxygen (mg/L)',rw:'Oxygen Ishyizemo mu Mazi (mg/L)',rn:'Oxygen Ishyizemo mu Mazi (mg/L)',ny:'Oxygen Yosunkha (mg/L)'},
+  'Conductivity (µS/cm)':{fr:'Conductivité (µS/cm)',es:'Conductividad (µS/cm)',pt:'Condutividade (µS/cm)',it:'Conducibilità (µS/cm)',ar:'الموصلية (µS/cm)',zh:'电导率 (µS/cm)',sw:'Uendeshaji (µS/cm)',am:'ሞቃት ማስተላለፍ (µS/cm)',hi:'चालकता (µS/cm)',bn:'পরিবাহিতা (µS/cm)',id:'Konduktivitas (µS/cm)',uk:'Електропровідність (мкСм/см)',ha:'Karfin Gudanar da Wutar (µS/cm)',yo:'Ifiranṣẹ Ina (µS/cm)',ln:'Conductivité (µS/cm)',mg:'Conductivité (µS/cm)',ne:'विद्युत चालकता (µS/cm)',tl:'Conductivity (µS/cm)',rw:'Ubushobozi bwo Gutwara Umuriro (µS/cm)',rn:'Ubushobozi bwo Gutwara Umuriro (µS/cm)',ny:'Kutulutsa Mwala (µS/cm)'},
+  'Turbidity (NTU)':{fr:'Turbidité (NTU)',es:'Turbidez (NTU)',pt:'Turbidez (NTU)',it:'Torbidità (NTU)',ar:'العكارة (NTU)',zh:'浊度 (NTU)',sw:'Uchafu wa Maji (NTU)',am:'ደመናማ (NTU)',hi:'मैलापन (NTU)',bn:'ঘোলাটেভাব (NTU)',id:'Kekeruhan (NTU)',uk:'Каламутність (НТО)',ha:'Gizagizar Ruwa (NTU)',yo:'Turbidity (NTU)',ln:'Turbidité (NTU)',mg:'Lehiboka (NTU)',ne:'धमिलोपन (NTU)',tl:'Turbidity (NTU)',rw:'Ukwangirika kw\'Amazi (NTU)',rn:'Ukwangirika kw\'Amazi (NTU)',ny:'Kudetsedwa kwa Madzi (NTU)'},
+  'Salinity (ppt)':{fr:'Salinité (ppt)',es:'Salinidad (ppt)',pt:'Salinidade (ppt)',it:'Salinità (ppt)',ar:'الملوحة (ppt)',zh:'盐度 (ppt)',sw:'Chumvi ya Maji (ppt)',am:'ጨዋማነት (ppt)',hi:'लवणता (ppt)',bn:'লবণাক্ততা (ppt)',id:'Salinitas (ppt)',uk:'Солоність (ppt)',ha:'Gishiri a Ruwa (ppt)',yo:'Iyọ ninu Omi (ppt)',ln:'Longu ya Mungwa (ppt)',mg:'Fanasiny (ppt)',ne:'लवणता (ppt)',tl:'Salinity (ppt)',rw:'Ubunyabutabire (ppt)',rn:'Ubunyabutabire (ppt)',ny:'Mchere wa Madzi (ppt)'},
+  'Oxidation-Reduction Potential (mV)':{fr:'Potentiel redox (mV)',es:'Potencial redox (mV)',pt:'Potencial de oxidorredução (mV)',it:'Potenziale redox (mV)',ar:'جهد الأكسدة والاختزال (mV)',zh:'氧化还原电位 (mV)',sw:'ORP (mV)',am:'ORP (mV)',hi:'ऑक्सीकरण-न्यूनीकरण क्षमता (mV)',bn:'ORP (mV)',id:'Potensial Redoks (mV)',uk:'Окисно-відновний потенціал (мВ)',ha:'ORP (mV)',yo:'ORP (mV)',ln:'ORP (mV)',mg:'ORP (mV)',ne:'ORP (mV)',tl:'ORP (mV)',rw:'ORP (mV)',rn:'ORP (mV)',ny:'ORP (mV)'},
+  'Flow Rate (m/s)':{fr:'Débit (m/s)',es:'Caudal (m/s)',pt:'Vazão (m/s)',it:'Portata (m/s)',ar:'معدل التدفق (م/ث)',zh:'流速 (m/s)',sw:'Kasi ya Mtiririko (m/s)',am:'ፍሰት ፍጥነት (m/s)',hi:'प्रवाह दर (m/s)',bn:'প্রবাহ হার (m/s)',id:'Kecepatan Aliran (m/s)',uk:'Швидкість течії (м/с)',ha:'Gudurin Ruwa (m/s)',yo:'Iwọn Ṣiṣan (m/s)',ln:'Vitesse ya Mayi (m/s)',mg:'Haingam-pandehan\'ny rano (m/s)',ne:'प्रवाह दर (m/s)',tl:'Flow Rate (m/s)',rw:'Intera y\'Amazi (m/s)',rn:'Intera y\'Amazi (m/s)',ny:'Liwiro la Madzi (m/s)'},
+  'Weather Conditions':{fr:'Conditions météorologiques',es:'Condiciones climáticas',pt:'Condições meteorológicas',it:'Condizioni meteorologiche',ar:'الأحوال الجوية',zh:'天气状况',sw:'Hali ya Hewa',am:'የአየር ሁኔታ',hi:'मौसम की स्थिति',bn:'আবহাওয়ার অবস্থা',id:'Kondisi Cuaca',uk:'Погодні умови',ha:'Yanayin Yanayi',yo:'Ipo Oju Ọjọ',ln:'Nyangwa ya Mbula',mg:'Toetry ny andro',ne:'मौसम अवस्था',tl:'Kondisyon ng Panahon',rw:'Imiterere y\'Ikirere',rn:'Imiterere y\'Ikirere',ny:'Mkhalidwe wa Nyengo'},
+  'Rainfall Last 24 Hours (mm)':{fr:'Précipitations dernières 24h (mm)',es:'Lluvia últimas 24 horas (mm)',pt:'Chuva últimas 24 horas (mm)',it:'Pioggia ultime 24 ore (mm)',ar:'هطول الأمطار آخر 24 ساعة (مم)',zh:'过去24小时降雨量 (mm)',sw:'Mvua Masaa 24 (mm)',am:'የ24 ሰዓት ዝናብ (mm)',hi:'पिछले 24 घंटे की वर्षा (mm)',bn:'গত ২৪ ঘণ্টার বৃষ্টি (mm)',id:'Curah Hujan 24 Jam (mm)',uk:'Опади за 24 год (мм)',ha:'Ruwan Sama A 24 Awowi (mm)',yo:'Ojo ni Wakati 24 (mm)',ln:'Mvula ya Ngonga 24 (mm)',mg:'Orana 24 ora (mm)',ne:'पछिल्लो २४ घण्टाको वर्षा (mm)',tl:'Ulan sa Nakalipas na 24 Oras (mm)',rw:'Imvura mu Masaha 24 (mm)',rn:'Imvura mu Masaha 24 (mm)',ny:'Mvula ya Maola 24 (mm)'},
+  'Collection Method':{fr:'Méthode de collecte',es:'Método de recolección',pt:'Método de coleta',it:'Metodo di raccolta',ar:'طريقة الجمع',zh:'采集方法',sw:'Njia ya Ukusanyaji',am:'የስብስብ ዘዴ',hi:'संग्रह विधि',bn:'সংগ্রহ পদ্ধতি',id:'Metode Pengambilan',uk:'Метод збору',ha:'Hanyar Tattarawa',yo:'Ọna Gbigba',ln:'Nzela ya Kosangisa',mg:'Fomba fanangonana',ne:'संकलन विधि',tl:'Paraan ng Pagkolekta',rw:'Uburyo bwo Gukusanya',rn:'Uburyo bwo Gukusanya',ny:'Njira ya Kukolekta'},
+  'Filter Type':{fr:'Type de filtre',es:'Tipo de filtro',pt:'Tipo de filtro',it:'Tipo di filtro',ar:'نوع المرشح',zh:'过滤器类型',sw:'Aina ya Kichujio',am:'የማጣሪያ ዓይነት',hi:'फ़िल्टर प्रकार',bn:'ফিল্টার ধরন',id:'Jenis Filter',uk:'Тип фільтра',ha:'Nau\'in Tace',yo:'Iru Asẹ',ln:'Ndenge ya Filtre',mg:'Karazana filtre',ne:'फिल्टर प्रकार',tl:'Uri ng Filter',rw:'Ubwoko bw\'Isandaraza',rn:'Ubwoko bw\'Isandaraza',ny:'Mtundu wa Chosesa'},
+  'Filter Pore Size (µm)':{fr:'Taille des pores du filtre (µm)',es:'Tamaño de poro del filtro (µm)',pt:'Tamanho do poro do filtro (µm)',it:'Dimensione del poro del filtro (µm)',ar:'حجم مسام المرشح (ميكرومتر)',zh:'过滤孔径 (µm)',sw:'Ukubwa wa Pore (µm)',am:'የማጣሪያ ቀዳዳ መጠን (µm)',hi:'फ़िल्टर पोर आकार (µm)',bn:'ফিল্টার পোর সাইজ (µm)',id:'Ukuran Pori Filter (µm)',uk:'Розмір пор фільтра (мкм)',ha:'Girman Rami na Tace (µm)',yo:'Iwọn Iho Asẹ (µm)',ln:'Monene ya Pore ya Filtre (µm)',mg:'Haliben\'ny pore filtre (µm)',ne:'फिल्टर पोर साइज (µm)',tl:'Laki ng Pore ng Filter (µm)',rw:'Ingano y\'Inzitizi z\'Isandaraza (µm)',rn:'Ingano y\'Inzitizi z\'Isandaraza (µm)',ny:'Kukula kwa Mpata wa Chosesa (µm)'},
+  'Volume Filtered (mL)':{fr:'Volume filtré (mL)',es:'Volumen filtrado (mL)',pt:'Volume filtrado (mL)',it:'Volume filtrato (mL)',ar:'الحجم المُرشَّح (مل)',zh:'过滤体积 (mL)',sw:'Kiasi Kilichochujwa (mL)',am:'የተጣራ መጠን (mL)',hi:'फ़िल्टर किया गया आयतन (mL)',bn:'ফিল্টার করা আয়তন (mL)',id:'Volume yang Difilter (mL)',uk:'Відфільтрований об\'єм (мл)',ha:'Yawan Da aka Tace (mL)',yo:'Iwọn Asẹ (mL)',ln:'Ntalo ya Kobikisama (mL)',mg:'Refin\'ny voasanta (mL)',ne:'फिल्टर गरिएको मात्रा (mL)',tl:'Dami ng Na-filter (mL)',rw:'Ingano Yarindwe (mL)',rn:'Ingano Yarindwe (mL)',ny:'Kuchuluka Kosesedwa (mL)'},
+  'Filtration Time (min)':{fr:'Temps de filtration (min)',es:'Tiempo de filtración (min)',pt:'Tempo de filtração (min)',it:'Tempo di filtrazione (min)',ar:'وقت الترشيح (دقيقة)',zh:'过滤时间 (min)',sw:'Muda wa Kuchuja (min)',am:'የማጣሪያ ጊዜ (ደቂቃ)',hi:'निस्पंदन समय (मिनट)',bn:'ফিল্ট্রেশন সময় (মিনিট)',id:'Waktu Filtrasi (menit)',uk:'Час фільтрації (хв)',ha:'Lokacin Tacewa (min)',yo:'Akoko Isẹ (min)',ln:'Ngonga ya Kokakatisa (min)',mg:'Fotoana fanasana (min)',ne:'फिल्ट्रेशन समय (मिनेट)',tl:'Oras ng Filtrasyon (min)',rw:'Igihe cyo Gusandara (min)',rn:'Igihe cyo Gusandara (min)',ny:'Nthawi ya Kusesa (min)'},
+  'Preservative Used':{fr:'Conservateur utilisé',es:'Conservante utilizado',pt:'Conservante utilizado',it:'Conservante utilizzato',ar:'المادة الحافظة المستخدمة',zh:'使用的防腐剂',sw:'Kemikali ya Kuhifadhi',am:'ጥቅም ላይ የዋለ ማቆያ',hi:'उपयोग किया गया संरक्षक',bn:'ব্যবহৃত সংরক্ষক',id:'Pengawet yang Digunakan',uk:'Використаний консервант',ha:'Sinadaran da aka Yi Amfani',yo:'Olùpamọ́ tí a lò',ln:'Produit ya Kobatela',mg:'Fampijanana nampiasaina',ne:'प्रयोग गरिएको संरक्षक',tl:'Preservative na Ginamit',rw:'Ubuhumeke Bwakoreshejwe',rn:'Ubuhumeke Bwakoreshejwe',ny:'Mankhwala Osunga Agogodwa'},
+  'Storage Temperature (°C)':{fr:'Température de stockage (°C)',es:'Temperatura de almacenamiento (°C)',pt:'Temperatura de armazenamento (°C)',it:'Temperatura di conservazione (°C)',ar:'درجة حرارة التخزين (°م)',zh:'储存温度 (°C)',sw:'Joto la Kuhifadhi (°C)',am:'የማከማቻ ሙቀት (°C)',hi:'भंडारण तापमान (°C)',bn:'সঞ্চয়ের তাপমাত্রা (°C)',id:'Suhu Penyimpanan (°C)',uk:'Температура зберігання (°C)',ha:'Zafin Ajiya (°C)',yo:'Iwọn Ooru Ipamọ (°C)',ln:'Mpio ya Kobomba (°C)',mg:'Hafanin\'ny fitehirizana (°C)',ne:'भण्डारण तापक्रम (°C)',tl:'Temperatura ng Pag-iimbak (°C)',rw:'Ubushyuhe bwo Kubika (°C)',rn:'Ubushyuhe bwo Kubika (°C)',ny:'Kutentha pa Kusunga (°C)'},
+  'Transport Conditions':{fr:'Conditions de transport',es:'Condiciones de transporte',pt:'Condições de transporte',it:'Condizioni di trasporto',ar:'ظروف النقل',zh:'运输条件',sw:'Hali ya Usafirishaji',am:'የትራንስፖርት ሁኔታ',hi:'परिवहन स्थितियाँ',bn:'পরিবহনের শর্তাবলী',id:'Kondisi Transportasi',uk:'Умови транспортування',ha:'Yanayin Jigilar Kaya',yo:'Ipo Gbigbe',ln:'Mambi ya Kotambola',mg:'Fepetra fitaterana',ne:'ढुवानी अवस्था',tl:'Kondisyon ng Transportasyon',rw:'Imiterere yo Gutwara',rn:'Imiterere yo Gutwara',ny:'Zochitika pa Kuyendetsa'},
+  'Time to Processing (hours)':{fr:'Délai avant traitement (heures)',es:'Tiempo hasta procesamiento (horas)',pt:'Tempo até processamento (horas)',it:'Tempo al processamento (ore)',ar:'الوقت حتى المعالجة (ساعات)',zh:'到处理的时间 (小时)',sw:'Muda Hadi Usindikaji (masaa)',am:'እስከ ማቀነባበሪያ ጊዜ (ሰዓታት)',hi:'प्रसंस्करण तक का समय (घंटे)',bn:'প্রক্রিয়াকরণ পর্যন্ত সময় (ঘণ্টা)',id:'Waktu hingga Pemrosesan (jam)',uk:'Час до обробки (год)',ha:'Lokaci Zuwa Sarrafawa (awowi)',yo:'Akoko si Ṣiṣe (wakati)',ln:'Ngonga Tii na Mosala (ngonga)',mg:'Fotoana hatramin\'ny fanatontosana (ora)',ne:'प्रशोधनसम्मको समय (घण्टा)',tl:'Oras Hanggang sa Proseso (oras)',rw:'Igihe kugeza Gusindura (amasaha)',rn:'Igihe kugeza Gusindura (amasaha)',ny:'Nthawi mpaka Kukonza (maola)'},
+  'Culture / Isolation':{fr:'Culture / Isolement',es:'Cultivo / Aislamiento',pt:'Cultura / Isolamento',it:'Coltura / Isolamento',ar:'الزرع / العزل',zh:'培养 / 分离',sw:'Kukuza / Kutengana',am:'ካልቸር / ክፍፍል',hi:'कल्चर / अलगाव',bn:'কালচার / আলাদাকরণ',id:'Kultur / Isolasi',uk:'Культивування / Ізоляція',ha:'Noma / Ware',yo:'Ogbin / Iyapa',ln:'Culture / Botikoli',mg:'Fananahana / Fanasaratsarana',ne:'कल्चर / आइसोलेशन',tl:'Kultura / Isolasyon',rw:'Gukora Culture / Gutandukanya',rn:'Gukora Culture / Gutandukanya',ny:'Chakudyetsa / Kusiyitsa'},
+  'PCR / qPCR':{fr:'PCR / qPCR',es:'PCR / qPCR',pt:'PCR / qPCR',it:'PCR / qPCR',ar:'PCR / qPCR',zh:'PCR / qPCR',sw:'PCR / qPCR',am:'PCR / qPCR',hi:'PCR / qPCR',bn:'PCR / qPCR',id:'PCR / qPCR',uk:'ПЛР / кількісна ПЛР',ha:'PCR / qPCR',yo:'PCR / qPCR',ln:'PCR / qPCR',mg:'PCR / qPCR',ne:'PCR / qPCR',tl:'PCR / qPCR',rw:'PCR / qPCR',rn:'PCR / qPCR',ny:'PCR / qPCR'},
+  'Whole Genome Sequencing (WGS)':{fr:'Séquençage du génome entier (WGS)',es:'Secuenciación de genoma completo (WGS)',pt:'Sequenciamento do genoma completo (WGS)',it:'Sequenziamento dell\'intero genoma (WGS)',ar:'تسلسل الجينوم الكامل (WGS)',zh:'全基因组测序 (WGS)',sw:'Mpangilio wa Jenomu Nzima (WGS)',am:'የሙሉ ጂኖም ቅደም ተከተል (WGS)',hi:'संपूर्ण जीनोम अनुक्रमण (WGS)',bn:'সম্পূর্ণ জিনোম সিকোয়েন্সিং (WGS)',id:'Whole Genome Sequencing (WGS)',uk:'Секвенування всього геному (WGS)',ha:'WGS',yo:'WGS',ln:'WGS',mg:'WGS',ne:'WGS',tl:'WGS',rw:'WGS',rn:'WGS',ny:'WGS'},
+  'Shotgun Metagenomics':{fr:'Métagénomique shotgun',es:'Metagenómica shotgun',pt:'Metagenômica shotgun',it:'Metagenomica shotgun',ar:'الميتاجينوميكس المتكامل',zh:'鸟枪法宏基因组学',sw:'Shotgun Metagenomics',am:'Shotgun Metagenomics',hi:'शॉटगन मेटाजीनोमिक्स',bn:'শটগান মেটাজেনোমিক্স',id:'Shotgun Metagenomics',uk:'Дробовикова метагеноміка',ha:'Shotgun Metagenomics',yo:'Shotgun Metagenomics',ln:'Shotgun Metagenomics',mg:'Shotgun Metagenomics',ne:'Shotgun Metagenomics',tl:'Shotgun Metagenomics',rw:'Shotgun Metagenomics',rn:'Shotgun Metagenomics',ny:'Shotgun Metagenomics'},
+  '16S rRNA Amplicon Sequencing':{fr:'Séquençage amplicon 16S ARNr',es:'Secuenciación amplicón 16S rRNA',pt:'Sequenciamento amplicon 16S rRNA',it:'Sequenziamento amplicone 16S rRNA',ar:'تسلسل أمبليكون 16S rRNA',zh:'16S rRNA 扩增子测序',sw:'16S rRNA Sequencing',am:'16S rRNA ቅደም ተከተል',hi:'16S rRNA अनुक्रमण',bn:'16S rRNA সিকোয়েন্সিং',id:'Sekuensing Amplikon 16S rRNA',uk:'Секвенування ампліконів 16S rRNA',ha:'16S rRNA',yo:'16S rRNA',ln:'16S rRNA',mg:'16S rRNA',ne:'16S rRNA',tl:'16S rRNA',rw:'16S rRNA',rn:'16S rRNA',ny:'16S rRNA'},
+  'Chemical / Nutrient Analysis':{fr:'Analyse chimique / nutritive',es:'Análisis químico / nutricional',pt:'Análise química / nutricional',it:'Analisi chimica / nutrizionale',ar:'التحليل الكيميائي / الغذائي',zh:'化学 / 营养分析',sw:'Uchambuzi wa Kemikali / Lishe',am:'ኬሚካዊ / ንጥረ-ምግብ ትንተና',hi:'रासायनिक / पोषक विश्लेषण',bn:'রাসায়নিক / পুষ্টি বিশ্লেষণ',id:'Analisis Kimia / Nutrisi',uk:'Хімічний / нутрієнтний аналіз',ha:'Nazarin Sinadarai / Abinci',yo:'Itupalẹ Kemika / Ounjẹ',ln:'Bosololi ya Chimie / Biloko',mg:'Fandinihana simia / sakafo',ne:'रासायनिक / पोषक विश्लेषण',tl:'Chemical / Nutrient Analysis',rw:'Isesengura rya Chimie / Imfungurwa',rn:'Isesengura rya Chimie / Imfungurwa',ny:'Kusanthula Mankhwala / Zakudya'},
+  'Antibiotic Resistance Genes (ARG)':{fr:'Gènes de résistance aux antibiotiques (ARG)',es:'Genes de resistencia a antibióticos (ARG)',pt:'Genes de resistência a antibióticos (ARG)',it:'Geni di resistenza agli antibiotici (ARG)',ar:'جينات مقاومة المضادات الحيوية (ARG)',zh:'抗生素耐药基因 (ARG)',sw:'Jeni za Upinzani wa Antibiotiki (ARG)',am:'ፀረ-ሕክምና መቋቋም ጂኖች (ARG)',hi:'एंटीबायोटिक प्रतिरोध जीन (ARG)',bn:'অ্যান্টিবায়োটিক রেজিস্ট্যান্স জিন (ARG)',id:'Gen Resistensi Antibiotik (ARG)',uk:'Гени антибіотикорезистентності (ARG)',ha:'ARG',yo:'ARG',ln:'ARG',mg:'ARG',ne:'ARG',tl:'ARG',rw:'ARG',rn:'ARG',ny:'ARG'},
+  'Target Pathogens':{fr:'Pathogènes cibles',es:'Patógenos objetivo',pt:'Patógenos alvo',it:'Patogeni bersaglio',ar:'مسببات الأمراض المستهدفة',zh:'目标病原体',sw:'Vimelea vya Lengo',am:'ዒላማ ፈፋሪዎች',hi:'लक्षित रोगजनक',bn:'লক্ষ্য রোগজীবাণু',id:'Patogen Target',uk:'Цільові патогени',ha:'Kwayoyin Cuta na Buri',yo:'Pathogen Ibi-afẹde',ln:'Microbes ya Boloko',mg:'Pathogènes tokana',ne:'लक्ष्य रोगकारकहरू',tl:'Target na Pathogen',rw:'Ibyara Indwara by\'Intego',rn:'Ibyara Indwara by\'Intego',ny:'Tizionetso Zoyang\'aniriridwa'},
+  'Target Genes':{fr:'Gènes cibles',es:'Genes objetivo',pt:'Genes alvo',it:'Geni bersaglio',ar:'الجينات المستهدفة',zh:'目标基因',sw:'Jeni za Lengo',am:'ዒላማ ጂኖች',hi:'लक्षित जीन',bn:'লক্ষ্য জিন',id:'Gen Target',uk:'Цільові гени',ha:'Kwayoyin Halittar Buri',yo:'Gene Ibi-afẹde',ln:'Gènes ya Boloko',mg:'Gènes tokana',ne:'लक्ष्य जिनहरू',tl:'Target na Gen',rw:'Gènes z\'Intego',rn:'Gènes z\'Intego',ny:'Majini Oyang\'aniriridwa'},
+  'Sequencing Platform':{fr:'Plateforme de séquençage',es:'Plataforma de secuenciación',pt:'Plataforma de sequenciamento',it:'Piattaforma di sequenziamento',ar:'منصة التسلسل',zh:'测序平台',sw:'Jukwaa la Mfuatano',am:'የቅደም ተከተል መድረክ',hi:'अनुक्रमण मंच',bn:'সিকোয়েন্সিং প্ল্যাটফর্ম',id:'Platform Sekuensing',uk:'Платформа секвенування',ha:'Platform na Tsararraki',yo:'Pẹpẹ Ṣiṣe-ibere',ln:'Plateforme ya Kosekwansa',mg:'Sehatra fanatontosana',ne:'सिकोयेन्सिङ प्लेटफर्म',tl:'Sequencing Platform',rw:'Platform yo Gusoma Genes',rn:'Platform yo Gusoma Genes',ny:'Platform ya Kusiriramo'},
+  'Field Blank':{fr:'Blanc de terrain',es:'Blanco de campo',pt:'Branco de campo',it:'Bianco di campo',ar:'العينة الفارغة الميدانية',zh:'野外空白',sw:'Sampuli ya Shamba Tupu',am:'የሜዳ ባዶ ናሙና',hi:'फील्ड ब्लैंक',bn:'ফিল্ড ব্ল্যাংক',id:'Field Blank',uk:'Польовий холостий зразок',ha:'Filin Fari',yo:'Field Blank',ln:'Field Blanc',mg:'Blanco an-tany',ne:'फिल्ड ब्ल्यांक',tl:'Field Blank',rw:'Field Blank',rn:'Field Blank',ny:'Field Blank'},
+  'Equipment Blank':{fr:'Blanc d\'équipement',es:'Blanco de equipo',pt:'Branco de equipamento',it:'Bianco attrezzatura',ar:'العينة الفارغة للمعدات',zh:'设备空白',sw:'Sampuli ya Kifaa Tupu',am:'የመሳሪያ ባዶ ናሙና',hi:'उपकरण ब्लैंक',bn:'সরঞ্জাম ব্ল্যাংক',id:'Equipment Blank',uk:'Апаратний холостий зразок',ha:'Kayan Aiki Fari',yo:'Equipment Blank',ln:'Equipment Blanc',mg:'Blanco fitaovana',ne:'उपकरण ब्ल्यांक',tl:'Equipment Blank',rw:'Equipment Blank',rn:'Equipment Blank',ny:'Zida Blank'},
+  'Field Duplicate':{fr:'Duplicat de terrain',es:'Duplicado de campo',pt:'Duplicata de campo',it:'Duplicato di campo',ar:'النسخة المكررة الميدانية',zh:'野外平行样',sw:'Nakala ya Shamba',am:'የሜዳ ቅጂ',hi:'फील्ड डुप्लीकेट',bn:'ফিল্ড ডুপ্লিকেট',id:'Duplikat Lapangan',uk:'Польовий дублікат',ha:'Kwafin Filin',yo:'Field Duplicate',ln:'Field Doublé',mg:'Duplikata an-tany',ne:'फिल्ड डुप्लिकेट',tl:'Field Duplicate',rw:'Field Duplicate',rn:'Field Duplicate',ny:'Field Duplicate'},
+  'Trip Blank':{fr:'Blanc de voyage',es:'Blanco de viaje',pt:'Branco de viagem',it:'Bianco di viaggio',ar:'العينة الفارغة للرحلة',zh:'运输空白',sw:'Sampuli ya Safari Tupu',am:'የጉዞ ባዶ ናሙና',hi:'ट्रिप ब्लैंक',bn:'ট্রিপ ব্ল্যাংক',id:'Trip Blank',uk:'Транспортний холостий зразок',ha:'Trip Fari',yo:'Trip Blank',ln:'Trip Blanc',mg:'Blanco diam-bolana',ne:'ट्रिप ब्ल्यांक',tl:'Trip Blank',rw:'Trip Blank',rn:'Trip Blank',ny:'Trip Blank'},
+  'Chain of Custody Number':{fr:'Numéro de chaîne de traçabilité',es:'Número de cadena de custodia',pt:'Número de cadeia de custódia',it:'Numero catena di custodia',ar:'رقم سلسلة الحفظ',zh:'监管链编号',sw:'Nambari ya Mnyororo wa Ulinzi',am:'የቁጣ ሰንሰለት ቁጥር',hi:'हिरासत श्रृंखला संख्या',bn:'কাস্টডি চেইন নম্বর',id:'Nomor Rantai Kustodi',uk:'Номер ланцюга зберігання',ha:'Lambar Sarkar Tsaro',yo:'Nọmba Pq Ẹwọn',ln:'Numéro ya Chaine ya Bolingo',mg:'Laharana fiandrianan\'ny sampul',ne:'कस्टडी चेन नम्बर',tl:'Chain of Custody Number',rw:'Inomero y\'Umuryango w\'Ubukọrezi',rn:'Inomero y\'Umuryango w\'Ubukọrezi',ny:'Nambala ya Nchito ya Kusunga'},
+  'Sample Condition on Arrival':{fr:'État de l\'échantillon à l\'arrivée',es:'Condición de la muestra al llegar',pt:'Condição da amostra na chegada',it:'Condizioni del campione all\'arrivo',ar:'حالة العينة عند الوصول',zh:'样品到达时的状态',sw:'Hali ya Sampuli Ifikiapo',am:'ሲደርስ የናሙና ሁኔታ',hi:'पहुंचने पर नमूने की स्थिति',bn:'আগমনে নমুনার অবস্থা',id:'Kondisi Sampel saat Tiba',uk:'Стан зразка при надходженні',ha:'Yanayin Samfur Sa\'ad Da Ya Isa',yo:'Ipo Apẹẹrẹ nigba Dide',ln:'Etat ya Exemple Na Kobwaka',mg:'Toetry ny Sampule rehefa tonga',ne:'आइपुग्दाको नमुनाको अवस्था',tl:'Kondisyon ng Sample sa Pagdating',rw:'Uko Intandaro Yari Ibaye Igerekeho',rn:'Uko Akingirwa Yari Ibaye Igerekeho',ny:'Mkhalidwe wa Sampulo Pakufika'},
+  'Comments / Additional Notes':{fr:'Commentaires / Notes supplémentaires',es:'Comentarios / Notas adicionales',pt:'Comentários / Notas adicionais',it:'Commenti / Note aggiuntive',ar:'التعليقات / ملاحظات إضافية',zh:'备注 / 附加说明',sw:'Maoni / Maelezo ya Ziada',am:'አስተያየቶች / ተጨማሪ ማስታወሻዎች',hi:'टिप्पणियाँ / अतिरिक्त नोट्स',bn:'মন্তব্য / অতিরিক্ত নোট',id:'Komentar / Catatan Tambahan',uk:'Коментарі / Додаткові примітки',ha:'Sharhi / Ƙarin Bayani',yo:'Asọye / Akọsilẹ Afikun',ln:'Makanisi / Liyebisi ya Kotombola',mg:'Hevitra / Fanamarihana fanampiny',ne:'टिप्पणीहरू / थप नोटहरू',tl:'Mga Komento / Karagdagang Tala',rw:'Ibisobanuro / Ibinotisi Bikonjejeho',rn:'Ibisobanuro / Ibinotisi Bikonjejeho',ny:'Maganizo / Zindikiro Zowonjezera'},
+};
+
+// UI strings per language
+const UI = {
+  en:{prompt:'SELECT YOUR LANGUAGE',title:'Your language. Your field data. Ready to analyze.',sub:'Select your language and download a comprehensive multilingual sample collection template.',change:'Change language',preview:'Column Preview',previewSub:'showing all fields with translations',download:'Download Excel Template',dlNote:'Saves locally · No data sent to any server',privTitle:'Completely private',privDesc:'All data stays on your device. Nothing uploaded or stored.',bioTitle:'Genomics-ready',bioDesc:'Fields for WGS, metagenomics, 16S rRNA, and ARG tracking.',qcTitle:'QC & Chain of Custody',qcDesc:'Field blanks, equipment blanks, duplicates, chain of custody.',thSection:'Section',thField:'Field (English)',thTranslation:'Translation',thType:'Type',thUnit:'Unit / Options',all:'All'},
+  fr:{prompt:'SÉLECTIONNEZ VOTRE LANGUE',title:'Votre langue. Vos données de terrain. Prêtes à analyser.',sub:'Sélectionnez votre langue et téléchargez un modèle de collecte complet.',change:'Changer de langue',preview:'Aperçu des colonnes',previewSub:'toutes les colonnes avec traductions',download:'Télécharger le modèle Excel',dlNote:'Sauvegarde locale · Aucune donnée envoyée',privTitle:'Complètement privé',privDesc:'Toutes les données restent sur votre appareil.',bioTitle:'Prêt pour la génomique',bioDesc:'Champs pour WGS, métagénomique, 16S ARNr, ARG.',qcTitle:'CQ & traçabilité',qcDesc:'Blancs de terrain, blancs d\'équipement, duplicats.',thSection:'Section',thField:'Champ (Anglais)',thTranslation:'Traduction',thType:'Type',thUnit:'Unité / Options',all:'Tous'},
+  es:{prompt:'SELECCIONE SU IDIOMA',title:'Su idioma. Sus datos de campo. Listos para analizar.',sub:'Seleccione su idioma y descargue una plantilla de recolección completa.',change:'Cambiar idioma',preview:'Vista previa de columnas',previewSub:'todos los campos con traducciones',download:'Descargar Plantilla Excel',dlNote:'Guardado local · Sin envío de datos',privTitle:'Completamente privado',privDesc:'Todos los datos permanecen en su dispositivo.',bioTitle:'Listo para genómica',bioDesc:'Campos para WGS, metagenómica, 16S rRNA, ARG.',qcTitle:'CC y cadena de custodia',qcDesc:'Blancos de campo, duplicados, cadena de custodia.',thSection:'Sección',thField:'Campo (Inglés)',thTranslation:'Traducción',thType:'Tipo',thUnit:'Unidad / Opciones',all:'Todos'},
+  pt:{prompt:'SELECIONE O SEU IDIOMA',title:'A sua língua. Os seus dados de campo. Prontos para analisar.',sub:'Selecione o seu idioma e descarregue um modelo de coleta completo.',change:'Mudar idioma',preview:'Pré-visualização das colunas',previewSub:'todos os campos com traduções',download:'Baixar Modelo Excel',dlNote:'Salvo localmente · Nenhum dado enviado',privTitle:'Completamente privado',privDesc:'Todos os dados ficam no seu dispositivo.',bioTitle:'Pronto para genómica',bioDesc:'Campos para WGS, metagenómica, 16S rRNA, ARG.',qcTitle:'CQ e cadeia de custódia',qcDesc:'Brancos de campo, duplicatas, cadeia de custódia.',thSection:'Secção',thField:'Campo (Inglês)',thTranslation:'Tradução',thType:'Tipo',thUnit:'Unidade / Opções',all:'Todos'},
+  it:{prompt:'SELEZIONA LA TUA LINGUA',title:'La tua lingua. I tuoi dati sul campo. Pronti per l\'analisi.',sub:'Seleziona la tua lingua e scarica un modello di raccolta completo.',change:'Cambia lingua',preview:'Anteprima colonne',previewSub:'tutti i campi con traduzioni',download:'Scarica Modello Excel',dlNote:'Salvato localmente · Nessun dato inviato',privTitle:'Completamente privato',privDesc:'Tutti i dati rimangono sul tuo dispositivo.',bioTitle:'Pronto per la genomica',bioDesc:'Campi per WGS, metagenomica, 16S rRNA, ARG.',qcTitle:'QC e catena di custodia',qcDesc:'Bianchi di campo, duplicati, catena di custodia.',thSection:'Sezione',thField:'Campo (Inglese)',thTranslation:'Traduzione',thType:'Tipo',thUnit:'Unità / Opzioni',all:'Tutti'},
+  ar:{prompt:'اختر لغتك',title:'لغتك. بياناتك الميدانية. جاهزة للتحليل.',sub:'اختر لغتك وقم بتنزيل نموذج جمع شامل.',change:'تغيير اللغة',preview:'معاينة الأعمدة',previewSub:'جميع الحقول مع الترجمات',download:'تنزيل نموذج Excel',dlNote:'حفظ محلي · لا ترسل بيانات',privTitle:'خصوصية تامة',privDesc:'تبقى جميع البيانات على جهازك.',bioTitle:'جاهز للجينوميكس',bioDesc:'حقول لـ WGS والميتاجينوميكس و16S وجينات المقاومة.',qcTitle:'ضبط الجودة وسلسلة الحفظ',qcDesc:'عينات فارغة ميدانية، مكررات، سلسلة الحفظ.',thSection:'القسم',thField:'الحقل (الإنجليزية)',thTranslation:'الترجمة',thType:'النوع',thUnit:'الوحدة / الخيارات',all:'الكل'},
+  zh:{prompt:'请选择您的语言',title:'您的语言。您的野外数据。随时可分析。',sub:'选择您的语言并下载全面的多语言采样模板。',change:'更换语言',preview:'列预览',previewSub:'显示所有字段及翻译',download:'下载Excel模板',dlNote:'本地保存 · 不发送任何数据',privTitle:'完全私密',privDesc:'所有数据保留在您的设备上。',bioTitle:'基因组学就绪',bioDesc:'支持WGS、宏基因组、16S rRNA、ARG的字段。',qcTitle:'质量控制与监管链',qcDesc:'野外空白、设备空白、平行样品、监管链。',thSection:'部分',thField:'字段（英文）',thTranslation:'翻译',thType:'类型',thUnit:'单位 / 选项',all:'全部'},
+  sw:{prompt:'CHAGUA LUGHA YAKO',title:'Lugha yako. Data yako ya shambani. Iko tayari kuchambuliwa.',sub:'Chagua lugha yako na upakue kiolezo cha ukusanyaji wa sampuli.',change:'Badilisha lugha',preview:'Muhtasari wa Safu',previewSub:'safu zote na tafsiri',download:'Pakua Kiolezo cha Excel',dlNote:'Hifadhiwa ndani · Hakuna data inayotumwa',privTitle:'Faragha kabisa',privDesc:'Data yote inabaki kwenye kifaa chako.',bioTitle:'Tayari kwa Jenomu',bioDesc:'Sehemu za WGS, metagenomics, 16S rRNA, ARG.',qcTitle:'QC na Mnyororo wa Ulinzi',qcDesc:'Sampuli za blank, nakala, mnyororo wa ulinzi.',thSection:'Sehemu',thField:'Uga (Kiingereza)',thTranslation:'Tafsiri',thType:'Aina',thUnit:'Kiasi / Chaguo',all:'Zote'},
+};
+// Fallback all others to English
+['am','hi','bn','id','uk','ha','yo','ln','mg','ne','tl','rw','rn','ny'].forEach(c=>{UI[c]={...UI.en};});
+UI.am.download='ቅጂ Excel'; UI.hi.download='Excel टेम्पलेट डाउनलोड करें'; UI.bn.download='Excel টেমপ্লেট ডাউনলোড করুন';
+UI.id.download='Unduh Template Excel'; UI.uk.download='Завантажити шаблон Excel';
+
+// ── State ─────────────────────────────────────────────────────────────────
+let selectedLang = null;
+let activeSection = 'all';
+
+// ── Build picker ──────────────────────────────────────────────────────────
+function buildPicker() {
+  const grid = document.getElementById('langGrid');
+  LANGS.forEach(l => {
+    const btn = document.createElement('button');
+    btn.className = 'lang-btn';
+    btn.id = 'lb-'+l.code;
+    btn.innerHTML = `<span class="lang-dot"></span>${l.native}`;
+    btn.onclick = () => selectLang(l.code);
+    grid.appendChild(btn);
+  });
+}
+
+function selectLang(code) {
+  selectedLang = code;
+  LANGS.forEach(l => {
+    const b = document.getElementById('lb-'+l.code);
+    if(b) b.classList.toggle('selected', l.code===code);
+  });
+  const lang = LANGS.find(l=>l.code===code);
+  const u = UI[code]||UI.en;
+
+  // Direction
+  document.documentElement.dir = lang.dir;
+  document.documentElement.lang = code;
+
+  // Apply UI strings
+  document.getElementById('langDisplay').innerHTML = `${lang.native} <span>${lang.english}</span>`;
+  document.getElementById('btnChange').textContent = u.change;
+  document.getElementById('previewTitle').innerHTML = `${u.preview} <span id="previewSub">${u.previewSub}</span>`;
+  document.getElementById('thSection').textContent = u.thSection;
+  document.getElementById('thField').textContent = u.thField;
+  document.getElementById('thTranslation').textContent = u.thTranslation;
+  document.getElementById('thType').textContent = u.thType;
+  document.getElementById('thUnit').textContent = u.thUnit;
+  document.getElementById('btnDownloadText').textContent = u.download;
+  document.getElementById('dlNote').textContent = u.dlNote;
+  document.getElementById('infoPrivTitle').textContent = u.privTitle;
+  document.getElementById('infoPrivDesc').textContent = u.privDesc;
+  document.getElementById('infoBioTitle').textContent = u.bioTitle;
+  document.getElementById('infoBioDesc').textContent = u.bioDesc;
+  document.getElementById('infoQcTitle').textContent = u.qcTitle;
+  document.getElementById('infoQcDesc').textContent = u.qcDesc;
+
+  buildSectionTabs();
+  renderTable();
+
+  document.getElementById('appSection').classList.add('visible');
+  document.getElementById('appSection').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function changeLang() {
+  document.getElementById('appSection').classList.remove('visible');
+  document.querySelector('.lang-section').scrollIntoView({behavior:'smooth',block:'start'});
+  LANGS.forEach(l => { const b=document.getElementById('lb-'+l.code); if(b) b.classList.remove('selected'); });
+  selectedLang = null;
+}
+
+function buildSectionTabs() {
+  const u = UI[selectedLang]||UI.en;
+  const container = document.getElementById('sectionTabs');
+  container.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'section-tab' + (activeSection==='all'?' active':'');
+  allBtn.textContent = u.all || 'All';
+  allBtn.onclick = () => { activeSection='all'; buildSectionTabs(); renderTable(); };
+  container.appendChild(allBtn);
+  SECTIONS.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'section-tab' + (activeSection===s.id?' active':'');
+    const sName = (selectedLang && selectedLang!=='en' && T['__section_'+s.id+'__'] && T['__section_'+s.id+'__'][selectedLang]) ? T['__section_'+s.id+'__'][selectedLang] : s.en;
+    btn.textContent = sName;
+    btn.onclick = () => { activeSection=s.id; buildSectionTabs(); renderTable(); };
+    container.appendChild(btn);
+  });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('colTableBody');
+  tbody.innerHTML = '';
+  const filtered = activeSection==='all' ? COLUMNS : COLUMNS.filter(c=>c.s===activeSection);
+  filtered.forEach(col => {
+    const sec = SECTIONS.find(s=>s.id===col.s);
+    const secName = (selectedLang && selectedLang!=='en' && T['__section_'+col.s+'__'] && T['__section_'+col.s+'__'][selectedLang]) ? T['__section_'+col.s+'__'][selectedLang] : sec?.en||col.s;
+    const trans = (selectedLang && selectedLang!=='en' && T[col.en] && T[col.en][selectedLang]) ? T[col.en][selectedLang] : (selectedLang==='en'?col.en:'—');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="section-badge ${sec?.badge||''}">${secName}</span></td>
+      <td><span class="col-en">${col.en}</span></td>
+      <td><span class="col-trans">${trans}</span></td>
+      <td><span class="col-type">${col.type}</span></td>
+      <td><span class="col-unit">${col.unit}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+
+// ── Instructions translations ─────────────────────────────────────────────
+const INSTR = {
+  en:{
+    title:'EnviroCollect — Water & Environmental Sample Collection Template',
+    langLabel:'Language:',
+    generatedLabel:'Generated:',
+    toolLabel:'Tool:',
+    urlLabel:'URL:',
+    howTitle:'HOW TO USE THIS TEMPLATE:',
+    how1:'1. The "Data Entry" sheet contains all sample collection fields.',
+    how2:'2. Row 1: Section grouping (Identity, Location, Sample Type, etc.)',
+    how3:'3. Row 2: Field names in English + your selected language.',
+    how4:'4. Row 3: Field type (Text, Number, Date, Select, Yes/No).',
+    how5:'5. Row 4: Units or valid options for each field.',
+    how6:'6. Row 5 onwards: Enter your sample data here.',
+    sectionsTitle:'SECTIONS:',
+    notesTitle:'NOTES:',
+    note1:'• GPS coordinates in decimal degrees (e.g. -1.2921, 36.8219 for Nairobi)',
+    note2:'• Date format: YYYY-MM-DD (ISO 8601)',
+    note3:'• Time format: HH:MM (24-hour)',
+    note4:'• Yes/No fields: enter Y or N',
+    note5:'• All field names shown in English and ',
+    privTitle:'PRIVACY:',
+    priv1:'• This file was generated locally in your browser.',
+    priv2:'• No data was sent to any server.',
+    priv3:'• Your field data stays on your device.',
+    sheetName:'Instructions',
+    dataSheetName:'Data Entry',
+  },
+  fr:{
+    title:'EnviroCollect — Modèle de collecte d'échantillons environnementaux',
+    langLabel:'Langue :',
+    generatedLabel:'Généré le :',
+    toolLabel:'Outil :',
+    urlLabel:'URL :',
+    howTitle:'COMMENT UTILISER CE MODÈLE :',
+    how1:'1. La feuille « Saisie des données » contient tous les champs de collecte.',
+    how2:'2. Ligne 1 : Regroupement par section (Identité, Lieu, Type, etc.)',
+    how3:'3. Ligne 2 : Noms des champs en anglais + langue sélectionnée.',
+    how4:'4. Ligne 3 : Type de champ (Texte, Nombre, Date, Sélection, Oui/Non).',
+    how5:'5. Ligne 4 : Unités ou options valides pour chaque champ.',
+    how6:'6. Ligne 5 et suivantes : Saisir les données ici.',
+    sectionsTitle:'SECTIONS :',
+    notesTitle:'REMARQUES :',
+    note1:'• Coordonnées GPS en degrés décimaux (ex. -1.2921, 36.8219 pour Nairobi)',
+    note2:'• Format de date : AAAA-MM-JJ (ISO 8601)',
+    note3:'• Format d'heure : HH:MM (24 heures)',
+    note4:'• Champs Oui/Non : saisir O ou N',
+    note5:'• Noms de champs en anglais et ',
+    privTitle:'CONFIDENTIALITÉ :',
+    priv1:'• Ce fichier a été généré localement dans votre navigateur.',
+    priv2:'• Aucune donnée n'a été envoyée à un serveur.',
+    priv3:'• Vos données restent sur votre appareil.',
+    sheetName:'Instructions',
+    dataSheetName:'Saisie des données',
+  },
+  es:{
+    title:'EnviroCollect — Plantilla de recolección de muestras ambientales',
+    langLabel:'Idioma:',
+    generatedLabel:'Generado:',
+    toolLabel:'Herramienta:',
+    urlLabel:'URL:',
+    howTitle:'CÓMO USAR ESTA PLANTILLA:',
+    how1:'1. La hoja "Entrada de datos" contiene todos los campos de recolección.',
+    how2:'2. Fila 1: Agrupación por sección (Identidad, Ubicación, Tipo, etc.)',
+    how3:'3. Fila 2: Nombres de campo en inglés + idioma seleccionado.',
+    how4:'4. Fila 3: Tipo de campo (Texto, Número, Fecha, Selección, Sí/No).',
+    how5:'5. Fila 4: Unidades u opciones válidas para cada campo.',
+    how6:'6. Fila 5 en adelante: Ingrese sus datos aquí.',
+    sectionsTitle:'SECCIONES:',
+    notesTitle:'NOTAS:',
+    note1:'• Coordenadas GPS en grados decimales (ej. -1.2921, 36.8219 para Nairobi)',
+    note2:'• Formato de fecha: AAAA-MM-DD (ISO 8601)',
+    note3:'• Formato de hora: HH:MM (24 horas)',
+    note4:'• Campos Sí/No: ingresar S o N',
+    note5:'• Nombres de campo en inglés y ',
+    privTitle:'PRIVACIDAD:',
+    priv1:'• Este archivo fue generado localmente en su navegador.',
+    priv2:'• No se enviaron datos a ningún servidor.',
+    priv3:'• Sus datos permanecen en su dispositivo.',
+    sheetName:'Instrucciones',
+    dataSheetName:'Entrada de datos',
+  },
+  pt:{
+    title:'EnviroCollect — Modelo de coleta de amostras ambientais',
+    langLabel:'Idioma:',
+    generatedLabel:'Gerado em:',
+    toolLabel:'Ferramenta:',
+    urlLabel:'URL:',
+    howTitle:'COMO USAR ESTE MODELO:',
+    how1:'1. A folha "Entrada de dados" contém todos os campos de coleta.',
+    how2:'2. Linha 1: Agrupamento por secção (Identidade, Localização, Tipo, etc.)',
+    how3:'3. Linha 2: Nomes dos campos em inglês + idioma selecionado.',
+    how4:'4. Linha 3: Tipo de campo (Texto, Número, Data, Seleção, Sim/Não).',
+    how5:'5. Linha 4: Unidades ou opções válidas para cada campo.',
+    how6:'6. Linha 5 em diante: Insira os seus dados aqui.',
+    sectionsTitle:'SECÇÕES:',
+    notesTitle:'NOTAS:',
+    note1:'• Coordenadas GPS em graus decimais (ex. -1.2921, 36.8219 para Nairobi)',
+    note2:'• Formato de data: AAAA-MM-DD (ISO 8601)',
+    note3:'• Formato de hora: HH:MM (24 horas)',
+    note4:'• Campos Sim/Não: inserir S ou N',
+    note5:'• Nomes de campos em inglês e ',
+    privTitle:'PRIVACIDADE:',
+    priv1:'• Este ficheiro foi gerado localmente no seu navegador.',
+    priv2:'• Nenhum dado foi enviado para qualquer servidor.',
+    priv3:'• Os seus dados ficam no seu dispositivo.',
+    sheetName:'Instruções',
+    dataSheetName:'Entrada de dados',
+  },
+  it:{
+    title:'EnviroCollect — Modello di raccolta campioni ambientali',
+    langLabel:'Lingua:',
+    generatedLabel:'Generato:',
+    toolLabel:'Strumento:',
+    urlLabel:'URL:',
+    howTitle:'COME USARE QUESTO MODELLO:',
+    how1:'1. Il foglio "Inserimento dati" contiene tutti i campi di raccolta.',
+    how2:'2. Riga 1: Raggruppamento per sezione (Identità, Posizione, Tipo, ecc.)',
+    how3:'3. Riga 2: Nomi dei campi in inglese + lingua selezionata.',
+    how4:'4. Riga 3: Tipo di campo (Testo, Numero, Data, Selezione, Sì/No).',
+    how5:'5. Riga 4: Unità o opzioni valide per ogni campo.',
+    how6:'6. Riga 5 in poi: Inserire i dati qui.',
+    sectionsTitle:'SEZIONI:',
+    notesTitle:'NOTE:',
+    note1:'• Coordinate GPS in gradi decimali (es. -1.2921, 36.8219 per Nairobi)',
+    note2:'• Formato data: AAAA-MM-GG (ISO 8601)',
+    note3:'• Formato ora: HH:MM (24 ore)',
+    note4:'• Campi Sì/No: inserire S o N',
+    note5:'• Nomi dei campi in inglese e ',
+    privTitle:'PRIVACY:',
+    priv1:'• Questo file è stato generato localmente nel browser.',
+    priv2:'• Nessun dato è stato inviato a nessun server.',
+    priv3:'• I tuoi dati rimangono sul tuo dispositivo.',
+    sheetName:'Istruzioni',
+    dataSheetName:'Inserimento dati',
+  },
+  ar:{
+    title:'EnviroCollect — نموذج جمع عينات المياه والبيئة',
+    langLabel:'اللغة:',
+    generatedLabel:'تاريخ الإنشاء:',
+    toolLabel:'الأداة:',
+    urlLabel:'الرابط:',
+    howTitle:'كيفية استخدام هذا النموذج:',
+    how1:'1. تحتوي ورقة "إدخال البيانات" على جميع حقول الجمع.',
+    how2:'2. الصف 1: تجميع الأقسام (الهوية، الموقع، النوع، إلخ)',
+    how3:'3. الصف 2: أسماء الحقول بالإنجليزية + اللغة المختارة.',
+    how4:'4. الصف 3: نوع الحقل (نص، رقم، تاريخ، اختيار، نعم/لا).',
+    how5:'5. الصف 4: الوحدات أو الخيارات الصحيحة لكل حقل.',
+    how6:'6. الصف 5 فصاعداً: أدخل بياناتك هنا.',
+    sectionsTitle:'الأقسام:',
+    notesTitle:'ملاحظات:',
+    note1:'• إحداثيات GPS بالدرجات العشرية (مثال: -1.2921, 36.8219 لنيروبي)',
+    note2:'• تنسيق التاريخ: YYYY-MM-DD (ISO 8601)',
+    note3:'• تنسيق الوقت: HH:MM (24 ساعة)',
+    note4:'• حقول نعم/لا: أدخل Y أو N',
+    note5:'• أسماء الحقول بالإنجليزية و',
+    privTitle:'الخصوصية:',
+    priv1:'• تم إنشاء هذا الملف محلياً في متصفحك.',
+    priv2:'• لم يتم إرسال أي بيانات إلى أي خادم.',
+    priv3:'• تبقى بياناتك الميدانية على جهازك.',
+    sheetName:'التعليمات',
+    dataSheetName:'إدخال البيانات',
+  },
+  zh:{
+    title:'EnviroCollect — 水体与环境样品采集模板',
+    langLabel:'语言：',
+    generatedLabel:'生成日期：',
+    toolLabel:'工具：',
+    urlLabel:'网址：',
+    howTitle:'如何使用此模板：',
+    how1:'1. "数据录入"工作表包含所有采样字段。',
+    how2:'2. 第1行：分区标题（标识、位置、样品类型等）',
+    how3:'3. 第2行：英文字段名 + 所选语言翻译。',
+    how4:'4. 第3行：字段类型（文本、数字、日期、选择、是/否）。',
+    how5:'5. 第4行：每个字段的单位或有效选项。',
+    how6:'6. 第5行起：在此输入您的采样数据。',
+    sectionsTitle:'分区：',
+    notesTitle:'注意事项：',
+    note1:'• GPS坐标用十进制度数（例：-1.2921, 36.8219 为内罗毕）',
+    note2:'• 日期格式：YYYY-MM-DD（ISO 8601）',
+    note3:'• 时间格式：HH:MM（24小时制）',
+    note4:'• 是/否字段：输入 Y 或 N',
+    note5:'• 所有字段名以英文和 ',
+    privTitle:'隐私说明：',
+    priv1:'• 此文件在您的浏览器中本地生成。',
+    priv2:'• 未向任何服务器发送数据。',
+    priv3:'• 您的野外数据保留在您的设备上。',
+    sheetName:'使用说明',
+    dataSheetName:'数据录入',
+  },
+  sw:{
+    title:'EnviroCollect — Kiolezo cha Ukusanyaji wa Sampuli za Mazingira',
+    langLabel:'Lugha:',
+    generatedLabel:'Imetolewa:',
+    toolLabel:'Zana:',
+    urlLabel:'URL:',
+    howTitle:'JINSI YA KUTUMIA KIOLEZO HIKI:',
+    how1:'1. Karatasi ya "Uingizaji wa Data" ina sehemu zote za ukusanyaji.',
+    how2:'2. Safu 1: Mgawanyiko wa sehemu (Utambulisho, Mahali, Aina, n.k.)',
+    how3:'3. Safu 2: Majina ya sehemu kwa Kiingereza + lugha uliyochagua.',
+    how4:'4. Safu 3: Aina ya sehemu (Maandishi, Nambari, Tarehe, Chaguo, Ndiyo/Hapana).',
+    how5:'5. Safu 4: Vitengo au chaguzi sahihi kwa kila sehemu.',
+    how6:'6. Safu 5 na kuendelea: Weka data yako hapa.',
+    sectionsTitle:'SEHEMU:',
+    notesTitle:'MAELEZO:',
+    note1:'• Kuratibu za GPS katika digrii za desimali (mfano: -1.2921, 36.8219 kwa Nairobi)',
+    note2:'• Muundo wa tarehe: YYYY-MM-DD (ISO 8601)',
+    note3:'• Muundo wa wakati: HH:MM (saa 24)',
+    note4:'• Sehemu za Ndiyo/Hapana: weka Y au N',
+    note5:'• Majina yote ya sehemu yanaonyeshwa kwa Kiingereza na ',
+    privTitle:'FARAGHA:',
+    priv1:'• Faili hili lilitengenezwa ndani ya kivinjari chako.',
+    priv2:'• Hakuna data iliyotumwa kwa seva yoyote.',
+    priv3:'• Data yako ya shambani inabaki kwenye kifaa chako.',
+    sheetName:'Maelekezo',
+    dataSheetName:'Uingizaji wa Data',
+  },
+  am:{
+    title:'EnviroCollect — የውሃ እና የአካባቢ ናሙና ስብስብ ቅጽ',
+    langLabel:'ቋንቋ:',
+    generatedLabel:'የተፈጠረበት ቀን:',
+    toolLabel:'መሣሪያ:',
+    urlLabel:'URL:',
+    howTitle:'ይህን ቅጽ እንዴት መጠቀም ይቻላል:',
+    how1:'1. "ዳታ ማስገቢያ" ሉህ ሁሉንም የስብስብ መስኮች ይዟል።',
+    how2:'2. ረድፍ 1: ክፍል ቡድን (መለያ, ቦታ, ናሙና አይነት, ወዘተ)',
+    how3:'3. ረድፍ 2: የመስክ ስሞች በእንግሊዝኛ + የተመረጠ ቋንቋ።',
+    how4:'4. ረድፍ 3: የመስክ አይነት (ጽሑፍ, ቁጥር, ቀን, ምርጫ, አዎ/አይ)።',
+    how5:'5. ረድፍ 4: ለእያንዳንዱ መስክ ክፍሎች ወይም አማራጮች።',
+    how6:'6. ረድፍ 5 ወዲህ: ዳታዎን እዚህ ያስገቡ።',
+    sectionsTitle:'ክፍሎች:',
+    notesTitle:'ማስታወሻዎች:',
+    note1:'• GPS መጋጠሚያዎች በዲሲሜል ዲግሪ (ለምሳሌ: -1.2921, 36.8219 ናይሮቢ)',
+    note2:'• የቀን ቅርጸት: YYYY-MM-DD (ISO 8601)',
+    note3:'• የጊዜ ቅርጸት: HH:MM (24 ሰዓት)',
+    note4:'• አዎ/አይ መስኮች: Y ወይም N ያስገቡ',
+    note5:'• ሁሉም የመስክ ስሞች በእንግሊዝኛ እና ',
+    privTitle:'ግላዊነት:',
+    priv1:'• ይህ ፋይል በአሳሽ ውስጥ በቦታው ተፈጠረ።',
+    priv2:'• ምንም ዳታ ወደ ምንም አገልጋይ አልተላከም።',
+    priv3:'• የሜዳ ዳታዎ በመሣሪያዎ ላይ ይቆያል።',
+    sheetName:'መመሪያዎች',
+    dataSheetName:'ዳታ ማስገቢያ',
+  },
+  hi:{
+    title:'EnviroCollect — जल एवं पर्यावरण नमूना संग्रह टेम्पलेट',
+    langLabel:'भाषा:',
+    generatedLabel:'निर्मित:',
+    toolLabel:'उपकरण:',
+    urlLabel:'URL:',
+    howTitle:'इस टेम्पलेट का उपयोग कैसे करें:',
+    how1:'1. "डेटा प्रविष्टि" शीट में सभी नमूना संग्रह फ़ील्ड हैं।',
+    how2:'2. पंक्ति 1: अनुभाग समूह (पहचान, स्थान, प्रकार, आदि)',
+    how3:'3. पंक्ति 2: अंग्रेजी में फ़ील्ड नाम + चयनित भाषा।',
+    how4:'4. पंक्ति 3: फ़ील्ड प्रकार (टेक्स्ट, संख्या, दिनांक, चयन, हां/नहीं)।',
+    how5:'5. पंक्ति 4: प्रत्येक फ़ील्ड के लिए इकाइयाँ या विकल्प।',
+    how6:'6. पंक्ति 5 से आगे: यहाँ अपना डेटा दर्ज करें।',
+    sectionsTitle:'अनुभाग:',
+    notesTitle:'नोट्स:',
+    note1:'• GPS निर्देशांक दशमलव डिग्री में (जैसे: -1.2921, 36.8219 नैरोबी के लिए)',
+    note2:'• दिनांक प्रारूप: YYYY-MM-DD (ISO 8601)',
+    note3:'• समय प्रारूप: HH:MM (24 घंटे)',
+    note4:'• हां/नहीं फ़ील्ड: Y या N दर्ज करें',
+    note5:'• सभी फ़ील्ड नाम अंग्रेजी और ',
+    privTitle:'गोपनीयता:',
+    priv1:'• यह फ़ाइल आपके ब्राउज़र में स्थानीय रूप से बनाई गई है।',
+    priv2:'• किसी सर्वर को कोई डेटा नहीं भेजा गया।',
+    priv3:'• आपका फ़ील्ड डेटा आपके डिवाइस पर रहता है।',
+    sheetName:'निर्देश',
+    dataSheetName:'डेटा प्रविष्टि',
+  },
+  bn:{
+    title:'EnviroCollect — জল ও পরিবেশ নমুনা সংগ্রহ টেমপ্লেট',
+    langLabel:'ভাষা:',
+    generatedLabel:'তৈরির তারিখ:',
+    toolLabel:'টুল:',
+    urlLabel:'URL:',
+    howTitle:'এই টেমপ্লেট কীভাবে ব্যবহার করবেন:',
+    how1:'1. "ডেটা এন্ট্রি" শীটে সমস্ত সংগ্রহ ক্ষেত্র রয়েছে।',
+    how2:'2. সারি 1: বিভাগ গোষ্ঠী (পরিচয়, অবস্থান, প্রকার, ইত্যাদি)',
+    how3:'3. সারি 2: ইংরেজিতে ক্ষেত্রের নাম + নির্বাচিত ভাষা।',
+    how4:'4. সারি 3: ক্ষেত্রের ধরন (টেক্সট, সংখ্যা, তারিখ, নির্বাচন, হ্যাঁ/না)।',
+    how5:'5. সারি 4: প্রতিটি ক্ষেত্রের জন্য একক বা বিকল্প।',
+    how6:'6. সারি 5 থেকে: এখানে আপনার ডেটা লিখুন।',
+    sectionsTitle:'বিভাগ:',
+    notesTitle:'নোট:',
+    note1:'• GPS স্থানাঙ্ক দশমিক ডিগ্রিতে (যেমন: -1.2921, 36.8219 নাইরোবির জন্য)',
+    note2:'• তারিখ ফরম্যাট: YYYY-MM-DD (ISO 8601)',
+    note3:'• সময় ফরম্যাট: HH:MM (24 ঘণ্টা)',
+    note4:'• হ্যাঁ/না ক্ষেত্র: Y বা N লিখুন',
+    note5:'• সমস্ত ক্ষেত্রের নাম ইংরেজি ও ',
+    privTitle:'গোপনীয়তা:',
+    priv1:'• এই ফাইলটি আপনার ব্রাউজারে স্থানীয়ভাবে তৈরি হয়েছে।',
+    priv2:'• কোনো সার্ভারে কোনো ডেটা পাঠানো হয়নি।',
+    priv3:'• আপনার মাঠের ডেটা আপনার ডিভাইসে থাকে।',
+    sheetName:'নির্দেশাবলী',
+    dataSheetName:'ডেটা এন্ট্রি',
+  },
+  id:{
+    title:'EnviroCollect — Template Pengambilan Sampel Air dan Lingkungan',
+    langLabel:'Bahasa:',
+    generatedLabel:'Dibuat:',
+    toolLabel:'Alat:',
+    urlLabel:'URL:',
+    howTitle:'CARA MENGGUNAKAN TEMPLATE INI:',
+    how1:'1. Lembar "Entri Data" berisi semua kolom pengambilan sampel.',
+    how2:'2. Baris 1: Pengelompokan bagian (Identitas, Lokasi, Jenis, dll.)',
+    how3:'3. Baris 2: Nama kolom dalam bahasa Inggris + bahasa yang dipilih.',
+    how4:'4. Baris 3: Jenis kolom (Teks, Angka, Tanggal, Pilihan, Ya/Tidak).',
+    how5:'5. Baris 4: Satuan atau opsi valid untuk setiap kolom.',
+    how6:'6. Baris 5 dan seterusnya: Masukkan data Anda di sini.',
+    sectionsTitle:'BAGIAN:',
+    notesTitle:'CATATAN:',
+    note1:'• Koordinat GPS dalam derajat desimal (mis. -1.2921, 36.8219 untuk Nairobi)',
+    note2:'• Format tanggal: YYYY-MM-DD (ISO 8601)',
+    note3:'• Format waktu: HH:MM (24 jam)',
+    note4:'• Kolom Ya/Tidak: masukkan Y atau N',
+    note5:'• Nama kolom ditampilkan dalam bahasa Inggris dan ',
+    privTitle:'PRIVASI:',
+    priv1:'• File ini dibuat secara lokal di browser Anda.',
+    priv2:'• Tidak ada data yang dikirim ke server mana pun.',
+    priv3:'• Data lapangan Anda tetap di perangkat Anda.',
+    sheetName:'Instruksi',
+    dataSheetName:'Entri Data',
+  },
+  uk:{
+    title:'EnviroCollect — Шаблон збору зразків води та навколишнього середовища',
+    langLabel:'Мова:',
+    generatedLabel:'Дата створення:',
+    toolLabel:'Інструмент:',
+    urlLabel:'URL:',
+    howTitle:'ЯК ВИКОРИСТОВУВАТИ ЦЕЙ ШАБЛОН:',
+    how1:'1. Аркуш «Введення даних» містить усі поля збору зразків.',
+    how2:'2. Рядок 1: Групування за розділами (Ідентифікація, Місце, Тип тощо)',
+    how3:'3. Рядок 2: Назви полів англійською + обрана мова.',
+    how4:'4. Рядок 3: Тип поля (Текст, Число, Дата, Вибір, Так/Ні).',
+    how5:'5. Рядок 4: Одиниці або допустимі значення для кожного поля.',
+    how6:'6. Рядок 5 і далі: Введіть дані тут.',
+    sectionsTitle:'РОЗДІЛИ:',
+    notesTitle:'ПРИМІТКИ:',
+    note1:'• Координати GPS у десяткових градусах (напр. -1.2921, 36.8219 для Найробі)',
+    note2:'• Формат дати: РРРР-ММ-ДД (ISO 8601)',
+    note3:'• Формат часу: ГГ:ХХ (24-годинний)',
+    note4:'• Поля Так/Ні: введіть Y або N',
+    note5:'• Усі назви полів англійською та ',
+    privTitle:'КОНФІДЕНЦІЙНІСТЬ:',
+    priv1:'• Цей файл створено локально у вашому браузері.',
+    priv2:'• Жодні дані не надсилалися на жоден сервер.',
+    priv3:'• Ваші польові дані залишаються на вашому пристрої.',
+    sheetName:'Інструкції',
+    dataSheetName:'Введення даних',
+  },
+};
+
+// Fallback remaining languages to English with translated sheet names
+const fallbackInstr = {
+  ha:{sheetName:'Umarni',dataSheetName:'Shigar da Bayanai'},
+  yo:{sheetName:'Awọn Itọnisọna',dataSheetName:'Titẹ Sii Data'},
+  ln:{sheetName:'Malako',dataSheetName:'Kotia Bisaleli'},
+  mg:{sheetName:'Torolàlana',dataSheetName:'Fampidirana Data'},
+  ne:{sheetName:'निर्देशहरू',dataSheetName:'डेटा प्रविष्टि'},
+  tl:{sheetName:'Mga Tagubilin',dataSheetName:'Pagpasok ng Data'},
+  rw:{sheetName:'Amabwiriza',dataSheetName:'Kwandika Amakuru'},
+  rn:{sheetName:'Amabwiriza',dataSheetName:'Kwandika Amakuru'},
+  ny:{sheetName:'Malangizo',dataSheetName:'Kulowetsa Deta'},
+};
+Object.keys(fallbackInstr).forEach(code => {
+  INSTR[code] = {...INSTR.en, ...fallbackInstr[code]};
+});
+
+  // ── Download Excel ────────────────────────────────────────────────────────
+function downloadExcel() {
+  if (!selectedLang) return;
+  const lang = LANGS.find(l=>l.code===selectedLang);
+  const wb = XLSX.utils.book_new();
+
+  // Build header row: English + translated (if not English)
+  const isEn = selectedLang === 'en';
+  const headers = COLUMNS.map(col => {
+    if (isEn) return col.en;
+    const trans = (T[col.en] && T[col.en][selectedLang]) ? T[col.en][selectedLang] : col.en;
+    return `${col.en}\n${trans}`;
+  });
+
+  // Build metadata rows
+  const sectionRow = COLUMNS.map(col => {
+    const sec = SECTIONS.find(s=>s.id===col.s);
+    const sName = (!isEn && T['__section_'+col.s+'__'] && T['__section_'+col.s+'__'][selectedLang]) ? `${sec?.en} / ${T['__section_'+col.s+'__'][selectedLang]}` : sec?.en||col.s;
+    return sName;
+  });
+  const typeRow  = COLUMNS.map(col => col.type);
+  const unitRow  = COLUMNS.map(col => col.unit);
+
+  // Build worksheet data
+  const wsData = [
+    sectionRow,
+    headers,
+    typeRow,
+    unitRow,
+    [], // empty row = first data entry row
+  ];
+  // Add 50 blank data rows
+  for (let i=0; i<50; i++) wsData.push(new Array(COLUMNS.length).fill(''));
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Column widths
+  ws['!cols'] = COLUMNS.map(() => ({wch: 22}));
+
+  // Freeze first 4 rows and first column
+  ws['!freeze'] = {xSplit:1, ySplit:4};
+
+  // Style header row (row index 1 = headers)
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let C=range.s.c; C<=range.e.c; C++) {
+    const cell0 = XLSX.utils.encode_cell({r:0,c:C});
+    const cell1 = XLSX.utils.encode_cell({r:1,c:C});
+    const cell2 = XLSX.utils.encode_cell({r:2,c:C});
+    const cell3 = XLSX.utils.encode_cell({r:3,c:C});
+    if (ws[cell0]) ws[cell0].s = {font:{bold:true},fill:{fgColor:{rgb:'1a6b3c'}},font:{bold:true,color:{rgb:'FFFFFF'}}};
+    if (ws[cell1]) ws[cell1].s = {font:{bold:true},fill:{fgColor:{rgb:'2d8a52'}},font:{bold:true,color:{rgb:'FFFFFF'}}};
+    if (ws[cell2]) ws[cell2].s = {fill:{fgColor:{rgb:'eaf2ea'}},font:{italic:true,color:{rgb:'5c5c5c'}}};
+    if (ws[cell3]) ws[cell3].s = {fill:{fgColor:{rgb:'eaf2ea'}},font:{italic:true,color:{rgb:'5c5c5c'}}};
+  }
+
+  // Add Instructions sheet
+  const I = INSTR[selectedLang] || INSTR.en;
+  const instructions = [
+    [I.title],
+    [''],
+    [I.langLabel, lang.native + ' (' + lang.english + ')'],
+    [I.generatedLabel, new Date().toISOString().split('T')[0]],
+    [I.toolLabel, 'EnviroCollect — companion to SciSummarize'],
+    [I.urlLabel, 'https://bhaley1.github.io/manuscript-summarizer---beta/'],
+    [''],
+    [I.howTitle],
+    [I.how1],
+    [I.how2],
+    [I.how3],
+    [I.how4],
+    [I.how5],
+    [I.how6],
+    [''],
+    [I.sectionsTitle],
+    ...SECTIONS.map(s => {
+      const sNameEn = s.en;
+      const sNameLang = (!isEn && T['__section_'+s.id+'__'] && T['__section_'+s.id+'__'][selectedLang]) ? T['__section_'+s.id+'__'][selectedLang] : null;
+      const sDisplay = sNameLang ? `${sNameEn} / ${sNameLang}` : sNameEn;
+      const fieldNames = COLUMNS.filter(c=>c.s===s.id).map(c=>{
+        const trans = (!isEn && T[c.en] && T[c.en][selectedLang]) ? `${c.en} / ${T[c.en][selectedLang]}` : c.en;
+        return trans;
+      }).join(', ');
+      return ['  • ' + sDisplay, fieldNames];
+    }),
+    [''],
+    [I.notesTitle],
+    [I.note1],
+    [I.note2],
+    [I.note3],
+    [I.note4],
+    [I.note5 + lang.native],
+    [''],
+    [I.privTitle],
+    [I.priv1],
+    [I.priv2],
+    [I.priv3],
+  ];
+  const wsInstr = XLSX.utils.aoa_to_sheet(instructions);
+  wsInstr['!cols'] = [{wch:50},{wch:100}];
+
+  XLSX.utils.book_append_sheet(wb, wsInstr, I.sheetName);
+  XLSX.utils.book_append_sheet(wb, ws, I.dataSheetName);
+
+  // Download
+  const filename = `EnviroCollect_${lang.english}_${new Date().toISOString().split('T')[0]}.xlsx`;
+  XLSX.writeFile(wb, filename);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+buildPicker();
+</script>
+
+</body>
+</html>
